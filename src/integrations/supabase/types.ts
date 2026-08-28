@@ -96,6 +96,8 @@ export type Database = {
           search_query: string | null
           source: string
           website: string | null
+          website_checked_at: string | null
+          website_status: number | null
         }
         Insert: {
           city?: string | null
@@ -115,6 +117,8 @@ export type Database = {
           search_query?: string | null
           source?: string
           website?: string | null
+          website_checked_at?: string | null
+          website_status?: number | null
         }
         Update: {
           city?: string | null
@@ -134,6 +138,8 @@ export type Database = {
           search_query?: string | null
           source?: string
           website?: string | null
+          website_checked_at?: string | null
+          website_status?: number | null
         }
         Relationships: [
           {

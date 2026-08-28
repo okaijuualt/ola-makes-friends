@@ -3,8 +3,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
-import { prospectLeads, deleteLead } from "@/lib/prospect.functions";
-import { leadsQueryOptions, runsQueryOptions } from "@/lib/leads";
+import { prospectLeads, deleteLead, revalidateWebsites } from "@/lib/prospect.functions";
+import { leadsQueryOptions, runsQueryOptions, siteHealth } from "@/lib/leads";
 import { profilesQueryOptions, pickProfile } from "@/lib/profiles";
 import { flagEmoji } from "@/lib/timeIntel";
 
@@ -63,7 +63,29 @@ function Captacao() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const checkSites = useServerFn(revalidateWebsites);
+  const verify = useMutation({
+    mutationFn: (onlyUnchecked: boolean) => checkSites({ data: { onlyUnchecked } }),
+    onSuccess: (res) => {
+      toast.success(
+        res.checked === 0
+          ? "Nenhum site pendente de verificação"
+          : `${res.checked} sites verificados · ${res.broken} com problema`,
+      );
+      void qc.invalidateQueries({ queryKey: ["leads"] });
+    },
+    onError: (e: Error) => toast.error(e.message || "Falha na verificação"),
+  });
+
+  const sortedLeads = [...leads].sort((a, b) => {
+    const diff = siteHealth(a).rank - siteHealth(b).rank;
+    if (diff !== 0) return diff;
+    return b.created_at.localeCompare(a.created_at);
+  });
+  const brokenCount = leads.filter((l) => siteHealth(l).rank >= 3).length;
+
   const selectable = profiles.filter((p) => p.country_code !== "DEFAULT");
+
 
   function toggleCountry(code: string) {
     setCountries((prev) => (prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]));
@@ -167,7 +189,36 @@ function Captacao() {
       </section>
 
       <section className="mb-10">
-        <h2 className="mb-3 text-lg font-semibold">Base captada ({leads.length})</h2>
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="text-lg font-semibold">Base captada ({leads.length})</h2>
+            {brokenCount > 0 && (
+              <p className="text-xs text-muted-foreground">
+                {brokenCount} com site fora do ar ou inacessível — mantidos, mas no fim da lista.
+              </p>
+            )}
+          </div>
+          {leads.length > 0 && (
+            <div className="flex gap-2">
+              <button
+                type="button"
+                disabled={verify.isPending}
+                onClick={() => verify.mutate(true)}
+                className="rounded-md border border-border px-3 py-1.5 text-xs hover:bg-accent disabled:opacity-50"
+              >
+                {verify.isPending ? "Verificando…" : "Verificar sites pendentes"}
+              </button>
+              <button
+                type="button"
+                disabled={verify.isPending}
+                onClick={() => verify.mutate(false)}
+                className="rounded-md border border-border px-3 py-1.5 text-xs text-muted-foreground hover:bg-accent disabled:opacity-50"
+              >
+                Reverificar todos
+              </button>
+            </div>
+          )}
+        </div>
         {isLoading ? (
           <p className="text-sm text-muted-foreground">Carregando…</p>
         ) : leads.length === 0 ? (
@@ -181,16 +232,22 @@ function Captacao() {
                 <tr>
                   <th className="px-3 py-2">Lead</th>
                   <th className="px-3 py-2">Empresa</th>
+                  <th className="px-3 py-2">Site</th>
                   <th className="px-3 py-2">País</th>
                   <th className="px-3 py-2">Contato</th>
                   <th className="px-3 py-2" />
                 </tr>
               </thead>
               <tbody>
-                {leads.map((l) => {
+                {sortedLeads.map((l) => {
                   const profile = pickProfile(profiles, l.country_code);
+                  const health = siteHealth(l);
+                  const dim = health.rank >= 3;
                   return (
-                    <tr key={l.id} className="border-t border-border/60">
+                    <tr
+                      key={l.id}
+                      className={`border-t border-border/60 ${dim ? "bg-muted/20 opacity-70" : ""}`}
+                    >
                       <td className="px-3 py-2">
                         <div className="font-medium">{l.name}</div>
                         <div className="text-xs text-muted-foreground">{l.role ?? l.niche}</div>
@@ -207,6 +264,14 @@ function Captacao() {
                             {l.website}
                           </a>
                         ) : null}
+                      </td>
+                      <td className="px-3 py-2">
+                        <span
+                          title={health.title}
+                          className={`inline-flex whitespace-nowrap rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-wide ${health.tone}`}
+                        >
+                          {health.label}
+                        </span>
                       </td>
                       <td className="px-3 py-2 whitespace-nowrap">
                         {flagEmoji(l.country_code)} {l.city ?? profile?.country_name ?? l.country_code}
