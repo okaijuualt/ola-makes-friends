@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { profilesQueryOptions, pickProfile } from "@/lib/profiles";
 import { DEMO_LEADS } from "@/lib/demoLeads";
+import { leadsQueryOptions } from "@/lib/leads";
 import { LeadCard } from "@/components/LeadCard";
 import { flagEmoji, type ContactType } from "@/lib/timeIntel";
 
@@ -37,12 +38,14 @@ const CONTACT_LABEL: Record<ContactType, string> = {
 
 function Dashboard() {
   const { data: profiles } = useSuspenseQuery(profilesQueryOptions);
-  const [now, setNow] = useState(() => new Date());
+  const { data: captured } = useQuery(leadsQueryOptions);
+  const [now, setNow] = useState<Date | null>(null);
   const [userCountry, setUserCountry] = useState("BR");
   const [contactType, setContactType] = useState<ContactType>("call");
   const [clockView, setClockView] = useState<"lead" | "user" | "both">("both");
 
   useEffect(() => {
+    setNow(new Date());
     const t = setInterval(() => setNow(new Date()), 30000);
     return () => clearInterval(t);
   }, []);
@@ -50,7 +53,12 @@ function Dashboard() {
   const userProfile = pickProfile(profiles, userCountry)!;
   const selectable = profiles.filter((p) => p.country_code !== "DEFAULT");
 
-  const leads = useMemo(() => DEMO_LEADS, []);
+  const leads = useMemo(
+    () => (captured && captured.length > 0 ? captured : DEMO_LEADS),
+    [captured],
+  );
+  const usingDemo = !captured || captured.length === 0;
+
 
   return (
     <main className="mx-auto max-w-6xl px-5 py-10">
@@ -63,12 +71,20 @@ function Dashboard() {
           Estimativas probabilísticas de melhor janela de contato por país. Nenhum horário garante
           resposta — os dados indicam apenas maior ou menor probabilidade de atividade.
         </p>
-        <Link
-          to="/comparador"
-          className="mt-4 inline-flex rounded-md border border-border px-3 py-1.5 text-sm hover:bg-accent"
-        >
-          Abrir comparador de horários →
-        </Link>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Link
+            to="/captacao"
+            className="inline-flex rounded-md bg-primary px-3 py-1.5 text-sm text-primary-foreground hover:opacity-90"
+          >
+            Captar leads (prospecção) →
+          </Link>
+          <Link
+            to="/comparador"
+            className="inline-flex rounded-md border border-border px-3 py-1.5 text-sm hover:bg-accent"
+          >
+            Abrir comparador de horários →
+          </Link>
+        </div>
       </header>
 
       <section className="mb-8 grid gap-4 rounded-xl border border-border bg-card p-4 sm:grid-cols-3">
@@ -120,24 +136,28 @@ function Dashboard() {
         </div>
       </section>
 
-      <div className="mb-4 text-sm text-muted-foreground">{leads.length} leads</div>
+      <div className="mb-4 text-sm text-muted-foreground">
+        {leads.length} leads {usingDemo ? "(demonstração)" : "(base captada)"}
+      </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {leads.map((lead) => {
-          const leadProfile = pickProfile(profiles, lead.country_code)!;
-          return (
-            <LeadCard
-              key={lead.id}
-              lead={lead}
-              leadProfile={leadProfile}
-              userProfile={userProfile}
-              contactType={contactType}
-              clockView={clockView}
-              now={now}
-            />
-          );
-        })}
+        {now &&
+          leads.map((lead) => {
+            const leadProfile = pickProfile(profiles, lead.country_code)!;
+            return (
+              <LeadCard
+                key={lead.id}
+                lead={lead}
+                leadProfile={leadProfile}
+                userProfile={userProfile}
+                contactType={contactType}
+                clockView={clockView}
+                now={now}
+              />
+            );
+          })}
       </div>
+
 
       <p className="mt-10 text-xs text-muted-foreground">
         Países sem dado específico usam um perfil padrão genérico, sinalizado com confiança baixa.
