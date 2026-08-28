@@ -296,11 +296,6 @@ function Captacao() {
             </table>
           </div>
         )}
-
-              </tbody>
-            </table>
-          </div>
-        )}
       </section>
 
       {runs.length > 0 && (
