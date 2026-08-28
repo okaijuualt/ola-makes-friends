@@ -38,12 +38,14 @@ const CONTACT_LABEL: Record<ContactType, string> = {
 
 function Dashboard() {
   const { data: profiles } = useSuspenseQuery(profilesQueryOptions);
-  const [now, setNow] = useState(() => new Date());
+  const { data: captured } = useQuery(leadsQueryOptions);
+  const [now, setNow] = useState<Date | null>(null);
   const [userCountry, setUserCountry] = useState("BR");
   const [contactType, setContactType] = useState<ContactType>("call");
   const [clockView, setClockView] = useState<"lead" | "user" | "both">("both");
 
   useEffect(() => {
+    setNow(new Date());
     const t = setInterval(() => setNow(new Date()), 30000);
     return () => clearInterval(t);
   }, []);
@@ -51,7 +53,12 @@ function Dashboard() {
   const userProfile = pickProfile(profiles, userCountry)!;
   const selectable = profiles.filter((p) => p.country_code !== "DEFAULT");
 
-  const leads = useMemo(() => DEMO_LEADS, []);
+  const leads = useMemo(
+    () => (captured && captured.length > 0 ? captured : DEMO_LEADS),
+    [captured],
+  );
+  const usingDemo = !captured || captured.length === 0;
+
 
   return (
     <main className="mx-auto max-w-6xl px-5 py-10">
