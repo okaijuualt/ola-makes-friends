@@ -153,10 +153,11 @@ export function resolveContactWindow(
   userProfile: CountryTimeProfile,
   leadProfile: CountryTimeProfile,
   contactType: ContactType = "call",
-  now: Date = new Date(),
+  now?: Date | null,
 ): ResolvedWindow {
-  const lead = getZonedParts(now, leadProfile.timezone);
-  const user = getZonedParts(now, userProfile.timezone);
+  const at = now instanceof Date && !Number.isNaN(now.getTime()) ? now : new Date();
+  const lead = getZonedParts(at, leadProfile.timezone);
+  const user = getZonedParts(at, userProfile.timezone);
 
   const bizStart = toMinutes(leadProfile.business_hours_start);
   const bizEnd = toMinutes(leadProfile.business_hours_end);
@@ -207,7 +208,7 @@ export function resolveContactWindow(
   }
   if (!nextWindow && channelWindows.length) {
     for (let i = 1; i <= 7; i++) {
-      const probe = new Date(now.getTime() + i * 86400000);
+      const probe = new Date(at.getTime() + i * 86400000);
       const p = getZonedParts(probe, leadProfile.timezone);
       if ((leadProfile.working_days || []).includes(p.weekday) && !isHolidayToday(leadProfile, p)) {
         nextWindow = channelWindows[0] ?? null;
@@ -222,7 +223,7 @@ export function resolveContactWindow(
   let minutesUntilNextWindow: number | null = null;
 
   if (nextWindow) {
-    const base = new Date(now.getTime() + dayOffset * 86400000);
+    const base = new Date(at.getTime() + dayOffset * 86400000);
     const bp = getZonedParts(base, leadProfile.timezone);
     const startDate = zonedWallToDate(
       leadProfile.timezone,
@@ -241,7 +242,7 @@ export function resolveContactWindow(
     const us = getZonedParts(startDate, userProfile.timezone);
     const ue = getZonedParts(endDate, userProfile.timezone);
     nextWindowUserLabel = `${fromMinutes(us.minutesOfDay)}–${fromMinutes(ue.minutesOfDay)}`;
-    minutesUntilNextWindow = Math.max(0, Math.round((startDate.getTime() - now.getTime()) / 60000));
+    minutesUntilNextWindow = Math.max(0, Math.round((startDate.getTime() - at.getTime()) / 60000));
   }
 
   return {
