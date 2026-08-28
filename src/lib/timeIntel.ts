@@ -43,7 +43,7 @@ export const STATUS_META: Record<
 
 export function toMinutes(hhmm: string): number {
   const [h, m] = hhmm.slice(0, 5).split(":").map(Number);
-  return h * 60 + (m || 0);
+  return (h || 0) * 60 + (m || 0);
 }
 
 export function fromMinutes(mins: number): string {
@@ -75,15 +75,15 @@ export function getZonedParts(date: Date, timeZone: string): ZonedParts {
     weekday: "short",
   });
   const parts = Object.fromEntries(fmt.formatToParts(date).map((p) => [p.type, p.value]));
-  const hour = Number(parts.hour) % 24;
-  const minute = Number(parts.minute);
+  const hour = Number(parts['hour']) % 24;
+  const minute = Number(parts['minute']);
   return {
-    year: Number(parts.year),
-    month: Number(parts.month),
-    day: Number(parts.day),
+    year: Number(parts['year']),
+    month: Number(parts['month']),
+    day: Number(parts['day']),
     hour,
     minute,
-    weekday: WEEKDAYS.indexOf(String(parts.weekday)),
+    weekday: WEEKDAYS.indexOf(String(parts['weekday'])),
     minutesOfDay: hour * 60 + minute,
   };
 }
@@ -210,7 +210,7 @@ export function resolveContactWindow(
       const probe = new Date(now.getTime() + i * 86400000);
       const p = getZonedParts(probe, leadProfile.timezone);
       if ((leadProfile.working_days || []).includes(p.weekday) && !isHolidayToday(leadProfile, p)) {
-        nextWindow = channelWindows[0];
+        nextWindow = channelWindows[0] ?? null;
         nextWindowIsTomorrow = true;
         dayOffset = i;
         break;
@@ -347,7 +347,7 @@ export function computeOpportunityScore(params: {
   const scale = 100 / totalWeight;
   const score = Math.round(factors.reduce((s, f) => s + f.value * f.weight * scale, 0));
 
-  const top = [...factors].sort((a, b) => b.value * b.weight - a.value * a.weight)[0];
+  const top: ScoreFactor | undefined = [...factors].sort((a, b) => b.value * b.weight - a.value * a.weight)[0];
   const label =
     score >= 75
       ? "Janela estimada muito favorável"
