@@ -63,7 +63,29 @@ function Captacao() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const checkSites = useServerFn(revalidateWebsites);
+  const verify = useMutation({
+    mutationFn: (onlyUnchecked: boolean) => checkSites({ data: { onlyUnchecked } }),
+    onSuccess: (res) => {
+      toast.success(
+        res.checked === 0
+          ? "Nenhum site pendente de verificação"
+          : `${res.checked} sites verificados · ${res.broken} com problema`,
+      );
+      void qc.invalidateQueries({ queryKey: ["leads"] });
+    },
+    onError: (e: Error) => toast.error(e.message || "Falha na verificação"),
+  });
+
+  const sortedLeads = [...leads].sort((a, b) => {
+    const diff = siteHealth(a).rank - siteHealth(b).rank;
+    if (diff !== 0) return diff;
+    return b.created_at.localeCompare(a.created_at);
+  });
+  const brokenCount = leads.filter((l) => siteHealth(l).rank >= 3).length;
+
   const selectable = profiles.filter((p) => p.country_code !== "DEFAULT");
+
 
   function toggleCountry(code: string) {
     setCountries((prev) => (prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]));
