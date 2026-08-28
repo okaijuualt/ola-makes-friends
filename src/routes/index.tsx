@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { profilesQueryOptions, pickProfile } from "@/lib/profiles";
 import { DEMO_LEADS } from "@/lib/demoLeads";
+import { leadsQueryOptions } from "@/lib/leads";
 import { LeadCard } from "@/components/LeadCard";
 import { flagEmoji, type ContactType } from "@/lib/timeIntel";
 
