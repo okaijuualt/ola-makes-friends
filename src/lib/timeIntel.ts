@@ -153,10 +153,11 @@ export function resolveContactWindow(
   userProfile: CountryTimeProfile,
   leadProfile: CountryTimeProfile,
   contactType: ContactType = "call",
-  now: Date = new Date(),
+  now?: Date | null,
 ): ResolvedWindow {
-  const lead = getZonedParts(now, leadProfile.timezone);
-  const user = getZonedParts(now, userProfile.timezone);
+  const at = now instanceof Date && !Number.isNaN(now.getTime()) ? now : new Date();
+  const lead = getZonedParts(at, leadProfile.timezone);
+  const user = getZonedParts(at, userProfile.timezone);
 
   const bizStart = toMinutes(leadProfile.business_hours_start);
   const bizEnd = toMinutes(leadProfile.business_hours_end);
