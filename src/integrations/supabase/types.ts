@@ -14,7 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      country_time_profiles: {
+        Row: {
+          best_call_hours: Json
+          best_contact_days: number[]
+          best_email_hours: Json
+          best_whatsapp_hours: Json
+          business_hours_end: string
+          business_hours_start: string
+          country_code: string
+          country_name: string
+          created_at: string
+          cultural_notes: string | null
+          data_confidence: string
+          holidays: Json
+          lunch_end: string | null
+          lunch_start: string | null
+          peak_hours: Json
+          timezone: string
+          utc_offset: string | null
+          working_days: number[]
+        }
+        Insert: {
+          best_call_hours?: Json
+          best_contact_days?: number[]
+          best_email_hours?: Json
+          best_whatsapp_hours?: Json
+          business_hours_end?: string
+          business_hours_start?: string
+          country_code: string
+          country_name: string
+          created_at?: string
+          cultural_notes?: string | null
+          data_confidence?: string
+          holidays?: Json
+          lunch_end?: string | null
+          lunch_start?: string | null
+          peak_hours?: Json
+          timezone: string
+          utc_offset?: string | null
+          working_days?: number[]
+        }
+        Update: {
+          best_call_hours?: Json
+          best_contact_days?: number[]
+          best_email_hours?: Json
+          best_whatsapp_hours?: Json
+          business_hours_end?: string
+          business_hours_start?: string
+          country_code?: string
+          country_name?: string
+          created_at?: string
+          cultural_notes?: string | null
+          data_confidence?: string
+          holidays?: Json
+          lunch_end?: string | null
+          lunch_start?: string | null
+          peak_hours?: Json
+          timezone?: string
+          utc_offset?: string | null
+          working_days?: number[]
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
