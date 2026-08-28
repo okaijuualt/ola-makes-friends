@@ -41,7 +41,6 @@ function Dashboard() {
   const [userCountry, setUserCountry] = useState("BR");
   const [contactType, setContactType] = useState<ContactType>("call");
   const [clockView, setClockView] = useState<"lead" | "user" | "both">("both");
-  const [sortByScore, setSortByScore] = useState(true);
 
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 30000);
@@ -121,15 +120,7 @@ function Dashboard() {
         </div>
       </section>
 
-      <div className="mb-4 flex items-center justify-between text-sm">
-        <span className="text-muted-foreground">{leads.length} leads</span>
-        <button
-          onClick={() => setSortByScore((s) => !s)}
-          className="rounded-md border border-border px-3 py-1.5 text-xs hover:bg-accent"
-        >
-          {sortByScore ? "Ordenado por score" : "Ordem original"}
-        </button>
-      </div>
+      <div className="mb-4 text-sm text-muted-foreground">{leads.length} leads</div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {leads.map((lead) => {
