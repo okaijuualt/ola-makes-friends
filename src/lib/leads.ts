@@ -18,8 +18,63 @@ export type CapturedLead = {
   source: string;
   note: string | null;
   search_query: string | null;
+  website_status: number | null;
+  website_checked_at: string | null;
   created_at: string;
 };
+
+export type SiteHealth = {
+  rank: number; // lower = better
+  label: string;
+  tone: string;
+  title: string;
+};
+
+export function siteHealth(lead: Pick<CapturedLead, "website" | "website_status">): SiteHealth {
+  if (!lead.website)
+    return {
+      rank: 2,
+      label: "sem site",
+      tone: "border-border text-muted-foreground",
+      title: "Nenhum site informado para este lead",
+    };
+  const s = lead.website_status;
+  if (s === null)
+    return {
+      rank: 1,
+      label: "não verificado",
+      tone: "border-border text-muted-foreground",
+      title: "Site ainda não verificado",
+    };
+  if (s >= 200 && s < 400)
+    return {
+      rank: 0,
+      label: "site ok",
+      tone: "border-status-high/40 text-status-high bg-status-high/10",
+      title: `Site respondeu ${s}`,
+    };
+  if (s === 0)
+    return {
+      rank: 4,
+      label: "site inacessível",
+      tone: "border-status-off/40 text-status-off bg-muted/40",
+      title: "Sem resposta (timeout ou domínio inválido)",
+    };
+  if (s >= 500)
+    return {
+      rank: 3,
+      label: `site fora do ar (${s})`,
+      tone: "border-status-low/40 text-status-low bg-status-low/10",
+      title: `Erro de servidor ${s} — provavelmente temporário`,
+    };
+  return {
+    rank: 3,
+    label: `site com erro (${s})`,
+    tone: "border-status-mid/40 text-status-mid bg-status-mid/10",
+    title: `Resposta ${s}`,
+  };
+}
+
 
 export const leadsQueryOptions = queryOptions({
   queryKey: ["leads"],
