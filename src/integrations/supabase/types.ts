@@ -77,6 +77,107 @@ export type Database = {
         }
         Relationships: []
       }
+      leads: {
+        Row: {
+          city: string | null
+          company: string
+          country_code: string
+          created_at: string
+          email: string | null
+          id: string
+          linkedin: string | null
+          name: string
+          niche: string
+          note: string | null
+          phone: string | null
+          response_rate: number | null
+          role: string | null
+          run_id: string | null
+          search_query: string | null
+          source: string
+          website: string | null
+        }
+        Insert: {
+          city?: string | null
+          company: string
+          country_code: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          linkedin?: string | null
+          name: string
+          niche: string
+          note?: string | null
+          phone?: string | null
+          response_rate?: number | null
+          role?: string | null
+          run_id?: string | null
+          search_query?: string | null
+          source?: string
+          website?: string | null
+        }
+        Update: {
+          city?: string | null
+          company?: string
+          country_code?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          linkedin?: string | null
+          name?: string
+          niche?: string
+          note?: string | null
+          phone?: string | null
+          response_rate?: number | null
+          role?: string | null
+          run_id?: string | null
+          search_query?: string | null
+          source?: string
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "prospect_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prospect_runs: {
+        Row: {
+          country_codes: string[]
+          created_at: string
+          found: number
+          id: string
+          niche: string
+          notes: string | null
+          requested: number
+          status: string
+        }
+        Insert: {
+          country_codes?: string[]
+          created_at?: string
+          found?: number
+          id?: string
+          niche: string
+          notes?: string | null
+          requested?: number
+          status?: string
+        }
+        Update: {
+          country_codes?: string[]
+          created_at?: string
+          found?: number
+          id?: string
+          niche?: string
+          notes?: string | null
+          requested?: number
+          status?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
