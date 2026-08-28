@@ -71,12 +71,20 @@ function Dashboard() {
           Estimativas probabilísticas de melhor janela de contato por país. Nenhum horário garante
           resposta — os dados indicam apenas maior ou menor probabilidade de atividade.
         </p>
-        <Link
-          to="/comparador"
-          className="mt-4 inline-flex rounded-md border border-border px-3 py-1.5 text-sm hover:bg-accent"
-        >
-          Abrir comparador de horários →
-        </Link>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Link
+            to="/captacao"
+            className="inline-flex rounded-md bg-primary px-3 py-1.5 text-sm text-primary-foreground hover:opacity-90"
+          >
+            Captar leads (prospecção) →
+          </Link>
+          <Link
+            to="/comparador"
+            className="inline-flex rounded-md border border-border px-3 py-1.5 text-sm hover:bg-accent"
+          >
+            Abrir comparador de horários →
+          </Link>
+        </div>
       </header>
 
       <section className="mb-8 grid gap-4 rounded-xl border border-border bg-card p-4 sm:grid-cols-3">
