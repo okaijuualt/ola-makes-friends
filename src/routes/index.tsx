@@ -128,24 +128,28 @@ function Dashboard() {
         </div>
       </section>
 
-      <div className="mb-4 text-sm text-muted-foreground">{leads.length} leads</div>
+      <div className="mb-4 text-sm text-muted-foreground">
+        {leads.length} leads {usingDemo ? "(demonstração)" : "(base captada)"}
+      </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {leads.map((lead) => {
-          const leadProfile = pickProfile(profiles, lead.country_code)!;
-          return (
-            <LeadCard
-              key={lead.id}
-              lead={lead}
-              leadProfile={leadProfile}
-              userProfile={userProfile}
-              contactType={contactType}
-              clockView={clockView}
-              now={now}
-            />
-          );
-        })}
+        {now &&
+          leads.map((lead) => {
+            const leadProfile = pickProfile(profiles, lead.country_code)!;
+            return (
+              <LeadCard
+                key={lead.id}
+                lead={lead}
+                leadProfile={leadProfile}
+                userProfile={userProfile}
+                contactType={contactType}
+                clockView={clockView}
+                now={now}
+              />
+            );
+          })}
       </div>
+
 
       <p className="mt-10 text-xs text-muted-foreground">
         Países sem dado específico usam um perfil padrão genérico, sinalizado com confiança baixa.
