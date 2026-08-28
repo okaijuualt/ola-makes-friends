@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CaptacaoRouteImport } from './routes/captacao'
 import { Route as ComparadorRouteImport } from './routes/comparador'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CaptacaoRoute = CaptacaoRouteImport.update({
+  id: '/captacao',
+  path: '/captacao',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ComparadorRoute = ComparadorRouteImport.update({
@@ -25,27 +31,31 @@ const ComparadorRoute = ComparadorRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/captacao': typeof CaptacaoRoute
   '/comparador': typeof ComparadorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/captacao': typeof CaptacaoRoute
   '/comparador': typeof ComparadorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/captacao': typeof CaptacaoRoute
   '/comparador': typeof ComparadorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/comparador'
+  fullPaths: '/' | '/captacao' | '/comparador'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/comparador'
-  id: '__root__' | '/' | '/comparador'
+  to: '/' | '/captacao' | '/comparador'
+  id: '__root__' | '/' | '/captacao' | '/comparador'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CaptacaoRoute: typeof CaptacaoRoute
   ComparadorRoute: typeof ComparadorRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/captacao': {
+      id: '/captacao'
+      path: '/captacao'
+      fullPath: '/captacao'
+      preLoaderRoute: typeof CaptacaoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/comparador': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CaptacaoRoute: CaptacaoRoute,
   ComparadorRoute: ComparadorRoute,
 }
 export const routeTree = rootRouteImport
