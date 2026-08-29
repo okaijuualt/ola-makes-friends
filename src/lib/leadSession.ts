@@ -7,9 +7,11 @@ type SessionState = {
   cleared: boolean;
   /** ids removed from the active view manually (data still saved) */
   hidden: string[];
+  /** when true, the user explicitly resumed the saved session for this visit */
+  resumed: boolean;
 };
 
-const EMPTY: SessionState = { cleared: false, hidden: [] };
+const EMPTY: SessionState = { cleared: false, hidden: [], resumed: false };
 
 function read(): SessionState {
   try {
@@ -19,6 +21,8 @@ function read(): SessionState {
     return {
       cleared: Boolean(parsed.cleared),
       hidden: Array.isArray(parsed.hidden) ? parsed.hidden.filter((x) => typeof x === "string") : [],
+      // never auto-resume: persisted sessions start hidden until the user opts in
+      resumed: false,
     };
   } catch {
     return EMPTY;
@@ -43,8 +47,14 @@ export function useLeadSession() {
     }
   }, []);
 
-  const clearSession = useCallback(() => update({ cleared: true, hidden: [] }), [update]);
-  const resumeSession = useCallback(() => update({ cleared: false, hidden: [] }), [update]);
+  const clearSession = useCallback(
+    () => update({ cleared: true, hidden: [], resumed: false }),
+    [update],
+  );
+  const resumeSession = useCallback(
+    () => update({ cleared: false, hidden: [], resumed: true }),
+    [update],
+  );
   const hideLead = useCallback(
     (id: string) =>
       setState((prev) => {
@@ -61,13 +71,14 @@ export function useLeadSession() {
 
   const filterLeads = useCallback(
     <T extends { id: string }>(leads: T[]): T[] =>
-      state.cleared ? [] : leads.filter((l) => !state.hidden.includes(l.id)),
+      state.cleared || !state.resumed ? [] : leads.filter((l) => !state.hidden.includes(l.id)),
     [state],
   );
 
   return {
     hydrated,
     cleared: state.cleared,
+    resumed: state.resumed,
     hiddenCount: state.hidden.length,
     clearSession,
     resumeSession,
