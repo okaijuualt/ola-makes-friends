@@ -42,12 +42,24 @@ const CONTACT_LABEL: Record<ContactType, string> = {
 };
 
 function Dashboard() {
+  const qc = useQueryClient();
   const { data: profiles } = useSuspenseQuery(profilesQueryOptions);
   const { data: captured } = useQuery(leadsQueryOptions);
   const [now, setNow] = useState<Date | null>(null);
   const [userCountry, setUserCountry] = useState("BR");
   const [contactType, setContactType] = useState<ContactType>("call");
   const [clockView, setClockView] = useState<"lead" | "user" | "both">("both");
+
+  const session = useLeadSession();
+  const removeLead = useServerFn(deleteLead);
+  const remove = useMutation({
+    mutationFn: (id: string) => removeLead({ data: { id } }),
+    onSuccess: () => {
+      toast.success("Lead removido");
+      void qc.invalidateQueries({ queryKey: ["leads"] });
+    },
+    onError: (e: Error) => toast.error(e.message || "Falha ao remover lead"),
+  });
 
   useEffect(() => {
     setNow(new Date());
@@ -58,11 +70,14 @@ function Dashboard() {
   const userProfile = pickProfile(profiles, userCountry)!;
   const selectable = profiles.filter((p) => p.country_code !== "DEFAULT");
 
-  const leads = useMemo(
-    () => (captured && captured.length > 0 ? captured : DEMO_LEADS),
-    [captured],
+  const storedCount = captured?.length ?? 0;
+  const activeCaptured = useMemo(
+    () => session.filterLeads(captured ?? []),
+    [captured, session],
   );
-  const usingDemo = !captured || captured.length === 0;
+  const usingDemo = storedCount === 0;
+  const leads = usingDemo ? DEMO_LEADS : activeCaptured;
+
 
 
   return (
