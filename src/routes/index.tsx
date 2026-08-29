@@ -1,11 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { Suspense, useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { profilesQueryOptions, pickProfile } from "@/lib/profiles";
 import { DEMO_LEADS } from "@/lib/demoLeads";
 import { leadsQueryOptions } from "@/lib/leads";
+import { deleteLead } from "@/lib/prospect.functions";
+import { useLeadSession } from "@/lib/leadSession";
 import { LeadCard } from "@/components/LeadCard";
 import { flagEmoji, type ContactType } from "@/lib/timeIntel";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
