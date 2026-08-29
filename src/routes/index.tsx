@@ -156,9 +156,40 @@ function Dashboard() {
         </div>
       </section>
 
-      <div className="mb-4 text-sm text-muted-foreground">
-        {leads.length} leads {usingDemo ? "(demonstração)" : "(base captada)"}
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="text-sm text-muted-foreground">
+          {leads.length} leads {usingDemo ? "(demonstração)" : "(base captada)"}
+        </div>
+        {session.hydrated && storedCount > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {(session.cleared || session.hiddenCount > 0) && (
+              <button
+                type="button"
+                onClick={session.resumeSession}
+                className="rounded-md border border-border px-3 py-1.5 text-xs hover:bg-accent"
+              >
+                Retomar última sessão ({storedCount})
+              </button>
+            )}
+            {leads.length > 0 && (
+              <button
+                type="button"
+                onClick={session.clearSession}
+                className="rounded-md border border-border px-3 py-1.5 text-xs text-muted-foreground hover:bg-accent"
+              >
+                Limpar sessão atual
+              </button>
+            )}
+          </div>
+        )}
       </div>
+
+      {session.hydrated && !usingDemo && leads.length === 0 && (
+        <p className="mb-6 text-sm text-muted-foreground">
+          Sessão limpa. Os leads continuam salvos — use “Retomar última sessão” para trazê-los de
+          volta.
+        </p>
+      )}
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {now &&
@@ -173,10 +204,12 @@ function Dashboard() {
                 contactType={contactType}
                 clockView={clockView}
                 now={now}
+                onDelete={usingDemo ? undefined : () => remove.mutate(lead.id)}
               />
             );
           })}
       </div>
+
 
 
       <p className="mt-10 text-xs text-muted-foreground">
