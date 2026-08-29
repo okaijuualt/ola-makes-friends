@@ -1,11 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { Suspense, useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { profilesQueryOptions, pickProfile } from "@/lib/profiles";
 import { DEMO_LEADS } from "@/lib/demoLeads";
 import { leadsQueryOptions } from "@/lib/leads";
+import { deleteLead } from "@/lib/prospect.functions";
+import { useLeadSession } from "@/lib/leadSession";
 import { LeadCard } from "@/components/LeadCard";
 import { flagEmoji, type ContactType } from "@/lib/timeIntel";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -37,12 +42,24 @@ const CONTACT_LABEL: Record<ContactType, string> = {
 };
 
 function Dashboard() {
+  const qc = useQueryClient();
   const { data: profiles } = useSuspenseQuery(profilesQueryOptions);
   const { data: captured } = useQuery(leadsQueryOptions);
   const [now, setNow] = useState<Date | null>(null);
   const [userCountry, setUserCountry] = useState("BR");
   const [contactType, setContactType] = useState<ContactType>("call");
   const [clockView, setClockView] = useState<"lead" | "user" | "both">("both");
+
+  const session = useLeadSession();
+  const removeLead = useServerFn(deleteLead);
+  const remove = useMutation({
+    mutationFn: (id: string) => removeLead({ data: { id } }),
+    onSuccess: () => {
+      toast.success("Lead removido");
+      void qc.invalidateQueries({ queryKey: ["leads"] });
+    },
+    onError: (e: Error) => toast.error(e.message || "Falha ao remover lead"),
+  });
 
   useEffect(() => {
     setNow(new Date());
@@ -53,11 +70,14 @@ function Dashboard() {
   const userProfile = pickProfile(profiles, userCountry)!;
   const selectable = profiles.filter((p) => p.country_code !== "DEFAULT");
 
-  const leads = useMemo(
-    () => (captured && captured.length > 0 ? captured : DEMO_LEADS),
-    [captured],
+  const storedCount = captured?.length ?? 0;
+  const activeCaptured = useMemo(
+    () => session.filterLeads(captured ?? []),
+    [captured, session],
   );
-  const usingDemo = !captured || captured.length === 0;
+  const usingDemo = storedCount === 0;
+  const leads = usingDemo ? DEMO_LEADS : activeCaptured;
+
 
 
   return (
@@ -136,9 +156,40 @@ function Dashboard() {
         </div>
       </section>
 
-      <div className="mb-4 text-sm text-muted-foreground">
-        {leads.length} leads {usingDemo ? "(demonstração)" : "(base captada)"}
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="text-sm text-muted-foreground">
+          {leads.length} leads {usingDemo ? "(demonstração)" : "(base captada)"}
+        </div>
+        {session.hydrated && storedCount > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {(session.cleared || session.hiddenCount > 0) && (
+              <button
+                type="button"
+                onClick={session.resumeSession}
+                className="rounded-md border border-border px-3 py-1.5 text-xs hover:bg-accent"
+              >
+                Retomar última sessão ({storedCount})
+              </button>
+            )}
+            {leads.length > 0 && (
+              <button
+                type="button"
+                onClick={session.clearSession}
+                className="rounded-md border border-border px-3 py-1.5 text-xs text-muted-foreground hover:bg-accent"
+              >
+                Limpar sessão atual
+              </button>
+            )}
+          </div>
+        )}
       </div>
+
+      {session.hydrated && !usingDemo && leads.length === 0 && (
+        <p className="mb-6 text-sm text-muted-foreground">
+          Sessão limpa. Os leads continuam salvos — use “Retomar última sessão” para trazê-los de
+          volta.
+        </p>
+      )}
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {now &&
@@ -153,10 +204,12 @@ function Dashboard() {
                 contactType={contactType}
                 clockView={clockView}
                 now={now}
+                onDelete={usingDemo ? undefined : () => remove.mutate(lead.id)}
               />
             );
           })}
       </div>
+
 
 
       <p className="mt-10 text-xs text-muted-foreground">

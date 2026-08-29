@@ -6,7 +6,9 @@ import { toast } from "sonner";
 import { prospectLeads, deleteLead, revalidateWebsites } from "@/lib/prospect.functions";
 import { leadsQueryOptions, runsQueryOptions, siteHealth } from "@/lib/leads";
 import { profilesQueryOptions, pickProfile } from "@/lib/profiles";
+import { useLeadSession } from "@/lib/leadSession";
 import { flagEmoji } from "@/lib/timeIntel";
+
 
 export const Route = createFileRoute("/captacao")({
   head: () => ({
@@ -33,9 +35,12 @@ const NICHE_SUGGESTIONS = ["Agência de marketing", "SaaS B2B", "E-commerce", "C
 
 function Captacao() {
   const qc = useQueryClient();
+  const session = useLeadSession();
   const { data: profiles = [] } = useQuery(profilesQueryOptions);
-  const { data: leads = [], isLoading } = useQuery(leadsQueryOptions);
+  const { data: allLeads = [], isLoading } = useQuery(leadsQueryOptions);
   const { data: runs = [] } = useQuery(runsQueryOptions);
+  const leads = session.filterLeads(allLeads);
+
 
   const [niche, setNiche] = useState("");
   const [countries, setCountries] = useState<string[]>(["BR"]);
@@ -49,9 +54,11 @@ function Captacao() {
     mutationFn: () => runProspect({ data: { niche, countries, quantity, extra } }),
     onSuccess: (res) => {
       toast.success(`${res.inserted} leads captados`);
+      session.resumeSession();
       void qc.invalidateQueries({ queryKey: ["leads"] });
       void qc.invalidateQueries({ queryKey: ["prospect_runs"] });
     },
+
     onError: (e: Error) => toast.error(e.message || "Falha na captação"),
   });
 
@@ -198,33 +205,59 @@ function Captacao() {
               </p>
             )}
           </div>
-          {leads.length > 0 && (
-            <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            {session.hydrated &&
+              allLeads.length > 0 &&
+              (session.cleared || session.hiddenCount > 0) && (
+                <button
+                  type="button"
+                  onClick={session.resumeSession}
+                  className="rounded-md border border-border px-3 py-1.5 text-xs hover:bg-accent"
+                >
+                  Retomar última sessão ({allLeads.length})
+                </button>
+              )}
+            {session.hydrated && leads.length > 0 && (
               <button
                 type="button"
-                disabled={verify.isPending}
-                onClick={() => verify.mutate(true)}
-                className="rounded-md border border-border px-3 py-1.5 text-xs hover:bg-accent disabled:opacity-50"
+                onClick={session.clearSession}
+                className="rounded-md border border-border px-3 py-1.5 text-xs text-muted-foreground hover:bg-accent"
               >
-                {verify.isPending ? "Verificando…" : "Verificar sites pendentes"}
+                Limpar sessão atual
               </button>
-              <button
-                type="button"
-                disabled={verify.isPending}
-                onClick={() => verify.mutate(false)}
-                className="rounded-md border border-border px-3 py-1.5 text-xs text-muted-foreground hover:bg-accent disabled:opacity-50"
-              >
-                Reverificar todos
-              </button>
-            </div>
-          )}
+            )}
+            {leads.length > 0 && (
+              <>
+                <button
+                  type="button"
+                  disabled={verify.isPending}
+                  onClick={() => verify.mutate(true)}
+                  className="rounded-md border border-border px-3 py-1.5 text-xs hover:bg-accent disabled:opacity-50"
+                >
+                  {verify.isPending ? "Verificando…" : "Verificar sites pendentes"}
+                </button>
+                <button
+                  type="button"
+                  disabled={verify.isPending}
+                  onClick={() => verify.mutate(false)}
+                  className="rounded-md border border-border px-3 py-1.5 text-xs text-muted-foreground hover:bg-accent disabled:opacity-50"
+                >
+                  Reverificar todos
+                </button>
+              </>
+            )}
+          </div>
         </div>
+
         {isLoading ? (
           <p className="text-sm text-muted-foreground">Carregando…</p>
         ) : leads.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            Nenhum lead captado ainda. Faça a primeira busca acima.
+            {allLeads.length > 0
+              ? "Sessão limpa. Os leads continuam salvos — use “Retomar última sessão” para trazê-los de volta."
+              : "Nenhum lead captado ainda. Faça a primeira busca acima."}
           </p>
+
         ) : (
           <div className="overflow-x-auto rounded-xl border border-border">
             <table className="w-full text-sm">
