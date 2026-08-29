@@ -16,7 +16,7 @@ type Props = {
   contactType: ContactType;
   clockView: "lead" | "user" | "both";
   now: Date;
-  onDelete?: () => void;
+  onDelete?: (() => void) | undefined;
 };
 
 
