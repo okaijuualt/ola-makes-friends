@@ -35,9 +35,12 @@ const NICHE_SUGGESTIONS = ["Agência de marketing", "SaaS B2B", "E-commerce", "C
 
 function Captacao() {
   const qc = useQueryClient();
+  const session = useLeadSession();
   const { data: profiles = [] } = useQuery(profilesQueryOptions);
-  const { data: leads = [], isLoading } = useQuery(leadsQueryOptions);
+  const { data: allLeads = [], isLoading } = useQuery(leadsQueryOptions);
   const { data: runs = [] } = useQuery(runsQueryOptions);
+  const leads = session.filterLeads(allLeads);
+
 
   const [niche, setNiche] = useState("");
   const [countries, setCountries] = useState<string[]>(["BR"]);
