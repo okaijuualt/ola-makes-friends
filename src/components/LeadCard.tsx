@@ -126,7 +126,20 @@ export function LeadCard({
         </div>
       </dl>
 
-      <p className="mt-3 text-xs text-muted-foreground">{score.label}</p>
+      <div className="mt-3 flex items-start justify-between gap-3">
+        <p className="text-xs text-muted-foreground">{score.label}</p>
+        {onDelete && (
+          <button
+            type="button"
+            onClick={onDelete}
+            aria-label={`Remover lead ${lead.name}`}
+            className="shrink-0 rounded border border-border px-2 py-0.5 text-[10px] uppercase tracking-wide text-muted-foreground hover:border-destructive/50 hover:text-destructive"
+          >
+            remover
+          </button>
+        )}
+      </div>
+
     </article>
   );
 }
