@@ -16,7 +16,9 @@ type Props = {
   contactType: ContactType;
   clockView: "lead" | "user" | "both";
   now: Date;
+  onDelete?: () => void;
 };
+
 
 function scoreTone(score: number) {
   if (score >= 75) return "text-status-high border-status-high/40 bg-status-high/10";
