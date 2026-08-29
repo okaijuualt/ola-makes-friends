@@ -34,7 +34,9 @@ export function LeadCard({
   contactType,
   clockView,
   now,
+  onDelete,
 }: Props) {
+
   const resolved = resolveContactWindow(userProfile, leadProfile, contactType, now);
   const score = computeOpportunityScore({
     leadProfile,
