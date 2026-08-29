@@ -253,8 +253,11 @@ function Captacao() {
           <p className="text-sm text-muted-foreground">Carregando…</p>
         ) : leads.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            Nenhum lead captado ainda. Faça a primeira busca acima.
+            {allLeads.length > 0
+              ? "Sessão limpa. Os leads continuam salvos — use “Retomar última sessão” para trazê-los de volta."
+              : "Nenhum lead captado ainda. Faça a primeira busca acima."}
           </p>
+
         ) : (
           <div className="overflow-x-auto rounded-xl border border-border">
             <table className="w-full text-sm">
