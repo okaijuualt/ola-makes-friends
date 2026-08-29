@@ -162,7 +162,7 @@ function Dashboard() {
         </div>
         {session.hydrated && storedCount > 0 && (
           <div className="flex flex-wrap gap-2">
-            {(session.cleared || session.hiddenCount > 0) && (
+            {(session.cleared || session.hiddenCount > 0 || !session.resumed) && (
               <button
                 type="button"
                 onClick={session.resumeSession}

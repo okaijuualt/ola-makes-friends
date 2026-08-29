@@ -208,7 +208,7 @@ function Captacao() {
           <div className="flex flex-wrap gap-2">
             {session.hydrated &&
               allLeads.length > 0 &&
-              (session.cleared || session.hiddenCount > 0) && (
+              (session.cleared || session.hiddenCount > 0 || !session.resumed) && (
                 <button
                   type="button"
                   onClick={session.resumeSession}
