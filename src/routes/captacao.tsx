@@ -54,9 +54,11 @@ function Captacao() {
     mutationFn: () => runProspect({ data: { niche, countries, quantity, extra } }),
     onSuccess: (res) => {
       toast.success(`${res.inserted} leads captados`);
+      session.resumeSession();
       void qc.invalidateQueries({ queryKey: ["leads"] });
       void qc.invalidateQueries({ queryKey: ["prospect_runs"] });
     },
+
     onError: (e: Error) => toast.error(e.message || "Falha na captação"),
   });
 
