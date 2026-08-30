@@ -36,6 +36,15 @@ export const prospectLeads = createServerFn({ method: "POST" })
 
     if (!rows.length) return { runId: run.id, inserted: 0 };
 
+    // New search = new session: discard all previously stored leads so old
+    // results never merge with the new ones ("Resume last session" only
+    // applies to a session the user explicitly cleared, which is replaced here).
+    const { error: wipeError } = await supabaseAdmin
+      .from("leads")
+      .delete()
+      .not("id", "is", null);
+    if (wipeError) throw new Error(wipeError.message);
+
     const { checkWebsite } = await import("./websiteCheck.server");
     const checkedAt = new Date().toISOString();
     const statuses = await Promise.all(
