@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/auth")({
@@ -70,16 +69,6 @@ function AuthPage() {
       <p className="mt-2 text-sm text-muted-foreground">
         Seus leads e buscas são privados: cada conta vê somente os próprios dados.
       </p>
-
-      <button
-        type="button"
-        onClick={() =>
-          void lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin })
-        }
-        className="mt-6 rounded-md border border-border px-3 py-2 text-sm hover:bg-accent"
-      >
-        Continuar com Google
-      </button>
 
       <form onSubmit={submit} className="mt-6 grid gap-3">
         <label className="text-sm">
