@@ -95,6 +95,7 @@ export type Database = {
           run_id: string | null
           search_query: string | null
           source: string
+          user_id: string
           website: string | null
           website_checked_at: string | null
           website_status: number | null
@@ -116,6 +117,7 @@ export type Database = {
           run_id?: string | null
           search_query?: string | null
           source?: string
+          user_id: string
           website?: string | null
           website_checked_at?: string | null
           website_status?: number | null
@@ -137,6 +139,7 @@ export type Database = {
           run_id?: string | null
           search_query?: string | null
           source?: string
+          user_id?: string
           website?: string | null
           website_checked_at?: string | null
           website_status?: number | null
@@ -161,6 +164,7 @@ export type Database = {
           notes: string | null
           requested: number
           status: string
+          user_id: string
         }
         Insert: {
           country_codes?: string[]
@@ -171,6 +175,7 @@ export type Database = {
           notes?: string | null
           requested?: number
           status?: string
+          user_id: string
         }
         Update: {
           country_codes?: string[]
@@ -181,6 +186,7 @@ export type Database = {
           notes?: string | null
           requested?: number
           status?: string
+          user_id?: string
         }
         Relationships: []
       }
