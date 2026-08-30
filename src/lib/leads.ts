@@ -79,6 +79,8 @@ export function siteHealth(lead: Pick<CapturedLead, "website" | "website_status"
 export const leadsQueryOptions = queryOptions({
   queryKey: ["leads"],
   queryFn: async (): Promise<CapturedLead[]> => {
+    const { data: auth } = await supabase.auth.getSession();
+    if (!auth.session) return [];
     const { data, error } = await supabase
       .from("leads")
       .select("*")
@@ -103,6 +105,8 @@ export type ProspectRun = {
 export const runsQueryOptions = queryOptions({
   queryKey: ["prospect_runs"],
   queryFn: async (): Promise<ProspectRun[]> => {
+    const { data: auth } = await supabase.auth.getSession();
+    if (!auth.session) return [];
     const { data, error } = await supabase
       .from("prospect_runs")
       .select("*")
