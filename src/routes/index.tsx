@@ -5,7 +5,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { profilesQueryOptions, pickProfile } from "@/lib/profiles";
 import { DEMO_LEADS } from "@/lib/demoLeads";
-import { leadsQueryOptions } from "@/lib/leads";
+import { leadsQueryOptions, touchLeads } from "@/lib/leads";
 import { deleteLead } from "@/lib/prospect.functions";
 import { useLeadSession } from "@/lib/leadSession";
 import { LeadCard } from "@/components/LeadCard";
@@ -167,7 +167,10 @@ function Dashboard() {
             {(session.cleared || session.hiddenCount > 0 || !session.resumed) && (
               <button
                 type="button"
-                onClick={session.resumeSession}
+                onClick={() => {
+                  session.resumeSession();
+                  void touchLeads((captured ?? []).map((l) => l.id));
+                }}
                 className="rounded-md border border-border px-3 py-1.5 text-xs hover:bg-accent"
               >
                 Retomar última sessão ({storedCount})

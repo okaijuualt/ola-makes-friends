@@ -85,6 +85,7 @@ export type Database = {
           created_at: string
           email: string | null
           id: string
+          last_used_at: string
           linkedin: string | null
           name: string
           niche: string
@@ -107,6 +108,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          last_used_at?: string
           linkedin?: string | null
           name: string
           niche: string
@@ -129,6 +131,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          last_used_at?: string
           linkedin?: string | null
           name?: string
           niche?: string
@@ -160,6 +163,7 @@ export type Database = {
           created_at: string
           found: number
           id: string
+          last_used_at: string
           niche: string
           notes: string | null
           requested: number
@@ -171,6 +175,7 @@ export type Database = {
           created_at?: string
           found?: number
           id?: string
+          last_used_at?: string
           niche: string
           notes?: string | null
           requested?: number
@@ -182,6 +187,7 @@ export type Database = {
           created_at?: string
           found?: number
           id?: string
+          last_used_at?: string
           niche?: string
           notes?: string | null
           requested?: number
@@ -195,7 +201,8 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      purge_stale_leads: { Args: never; Returns: number }
+      touch_leads: { Args: { _ids: string[] }; Returns: undefined }
     }
     Enums: {
       [_ in never]: never

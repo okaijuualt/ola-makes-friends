@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
 import { prospectLeads, deleteLead, revalidateWebsites } from "@/lib/prospect.functions";
-import { leadsQueryOptions, runsQueryOptions, siteHealth } from "@/lib/leads";
+import { leadsQueryOptions, runsQueryOptions, siteHealth, touchLeads } from "@/lib/leads";
 import { profilesQueryOptions, pickProfile } from "@/lib/profiles";
 import { useLeadSession } from "@/lib/leadSession";
 import { flagEmoji } from "@/lib/timeIntel";
@@ -215,7 +215,10 @@ function Captacao() {
               (session.cleared || session.hiddenCount > 0 || !session.resumed) && (
                 <button
                   type="button"
-                  onClick={session.resumeSession}
+                  onClick={() => {
+                    session.resumeSession();
+                    void touchLeads(allLeads.map((l) => l.id));
+                  }}
                   className="rounded-md border border-border px-3 py-1.5 text-xs hover:bg-accent"
                 >
                   Retomar última sessão ({allLeads.length})
