@@ -8,6 +8,7 @@ import { leadsQueryOptions, runsQueryOptions, siteHealth } from "@/lib/leads";
 import { profilesQueryOptions, pickProfile } from "@/lib/profiles";
 import { useLeadSession } from "@/lib/leadSession";
 import { flagEmoji } from "@/lib/timeIntel";
+import { AuthGate, SignOutButton } from "@/components/AuthGate";
 
 
 export const Route = createFileRoute("/captacao")({
@@ -28,7 +29,7 @@ export const Route = createFileRoute("/captacao")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Captacao,
+  component: CaptacaoPage,
 });
 
 const NICHE_SUGGESTIONS = ["Agência de marketing", "SaaS B2B", "E-commerce", "Clínica odontológica", "Logística", "Consultoria financeira"];
@@ -107,12 +108,15 @@ function Captacao() {
           Prospecção automática por nicho e país. Os resultados são estimativas geradas por IA —
           confirme os contatos antes de abordar.
         </p>
-        <Link
-          to="/"
-          className="mt-4 inline-flex rounded-md border border-border px-3 py-1.5 text-sm hover:bg-accent"
-        >
-          ← Voltar ao painel de horários
-        </Link>
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <Link
+            to="/"
+            className="inline-flex rounded-md border border-border px-3 py-1.5 text-sm hover:bg-accent"
+          >
+            ← Voltar ao painel de horários
+          </Link>
+          <SignOutButton />
+        </div>
       </header>
 
       <section className="mb-10 space-y-4 rounded-xl border border-border bg-card p-5">
@@ -348,5 +352,13 @@ function Captacao() {
         </section>
       )}
     </main>
+  );
+}
+
+function CaptacaoPage() {
+  return (
+    <AuthGate>
+      <Captacao />
+    </AuthGate>
   );
 }
