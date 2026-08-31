@@ -167,7 +167,10 @@ function Dashboard() {
             {(session.cleared || session.hiddenCount > 0 || !session.resumed) && (
               <button
                 type="button"
-                onClick={session.resumeSession}
+                onClick={() => {
+                  session.resumeSession();
+                  void touchLeads((captured ?? []).map((l) => l.id));
+                }}
                 className="rounded-md border border-border px-3 py-1.5 text-xs hover:bg-accent"
               >
                 Retomar última sessão ({storedCount})
