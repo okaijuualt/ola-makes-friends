@@ -76,20 +76,34 @@ export function siteHealth(lead: Pick<CapturedLead, "website" | "website_status"
 }
 
 
+/** leads não usados por 12h são descartados pela limpeza automática do banco */
+export const LEAD_TTL_HOURS = 12;
+
 export const leadsQueryOptions = queryOptions({
   queryKey: ["leads"],
   queryFn: async (): Promise<CapturedLead[]> => {
     const { data: auth } = await supabase.auth.getSession();
     if (!auth.session) return [];
+    const cutoff = new Date(Date.now() - LEAD_TTL_HOURS * 3600_000).toISOString();
     const { data, error } = await supabase
       .from("leads")
       .select("*")
+      .gte("last_used_at", cutoff)
       .order("created_at", { ascending: false })
       .limit(200);
     if (error) throw error;
     return (data ?? []) as unknown as CapturedLead[];
   },
 });
+
+/** marca leads como usados agora, renovando a validade de 12h */
+export async function touchLeads(ids: string[]) {
+  if (!ids.length) return;
+  const { data: auth } = await supabase.auth.getSession();
+  if (!auth.session) return;
+  await supabase.rpc("touch_leads", { _ids: ids });
+}
+
 
 export type ProspectRun = {
   id: string;
