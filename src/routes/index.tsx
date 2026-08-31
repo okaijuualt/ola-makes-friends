@@ -9,6 +9,7 @@ import { leadsQueryOptions } from "@/lib/leads";
 import { deleteLead } from "@/lib/prospect.functions";
 import { useLeadSession } from "@/lib/leadSession";
 import { LeadCard } from "@/components/LeadCard";
+import { AuthGate, SignOutButton } from "@/components/AuthGate";
 import { flagEmoji, type ContactType } from "@/lib/timeIntel";
 
 
@@ -104,6 +105,7 @@ function Dashboard() {
           >
             Abrir comparador de horários →
           </Link>
+          <SignOutButton />
         </div>
       </header>
 
@@ -221,8 +223,10 @@ function Dashboard() {
 
 function Index() {
   return (
-    <Suspense fallback={<div className="p-10 text-sm text-muted-foreground">Carregando…</div>}>
-      <Dashboard />
-    </Suspense>
+    <AuthGate>
+      <Suspense fallback={<div className="p-10 text-sm text-muted-foreground">Carregando…</div>}>
+        <Dashboard />
+      </Suspense>
+    </AuthGate>
   );
 }
