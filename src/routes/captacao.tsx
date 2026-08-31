@@ -8,6 +8,7 @@ import { leadsQueryOptions, runsQueryOptions, siteHealth } from "@/lib/leads";
 import { profilesQueryOptions, pickProfile } from "@/lib/profiles";
 import { useLeadSession } from "@/lib/leadSession";
 import { flagEmoji } from "@/lib/timeIntel";
+import { AuthGate, SignOutButton } from "@/components/AuthGate";
 
 
 export const Route = createFileRoute("/captacao")({
@@ -28,7 +29,7 @@ export const Route = createFileRoute("/captacao")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Captacao,
+  component: CaptacaoPage,
 });
 
 const NICHE_SUGGESTIONS = ["Agência de marketing", "SaaS B2B", "E-commerce", "Clínica odontológica", "Logística", "Consultoria financeira"];
@@ -348,5 +349,13 @@ function Captacao() {
         </section>
       )}
     </main>
+  );
+}
+
+function CaptacaoPage() {
+  return (
+    <AuthGate>
+      <Captacao />
+    </AuthGate>
   );
 }
