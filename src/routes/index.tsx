@@ -5,7 +5,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { profilesQueryOptions, pickProfile } from "@/lib/profiles";
 import { DEMO_LEADS } from "@/lib/demoLeads";
-import { leadsQueryOptions } from "@/lib/leads";
+import { leadsQueryOptions, touchLeads } from "@/lib/leads";
 import { deleteLead } from "@/lib/prospect.functions";
 import { useLeadSession } from "@/lib/leadSession";
 import { LeadCard } from "@/components/LeadCard";
