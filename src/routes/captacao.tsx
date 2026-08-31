@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
 import { prospectLeads, deleteLead, revalidateWebsites } from "@/lib/prospect.functions";
-import { leadsQueryOptions, runsQueryOptions, siteHealth } from "@/lib/leads";
+import { leadsQueryOptions, runsQueryOptions, siteHealth, touchLeads } from "@/lib/leads";
 import { profilesQueryOptions, pickProfile } from "@/lib/profiles";
 import { useLeadSession } from "@/lib/leadSession";
 import { flagEmoji } from "@/lib/timeIntel";
