@@ -108,12 +108,15 @@ function Captacao() {
           Prospecção automática por nicho e país. Os resultados são estimativas geradas por IA —
           confirme os contatos antes de abordar.
         </p>
-        <Link
-          to="/"
-          className="mt-4 inline-flex rounded-md border border-border px-3 py-1.5 text-sm hover:bg-accent"
-        >
-          ← Voltar ao painel de horários
-        </Link>
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <Link
+            to="/"
+            className="inline-flex rounded-md border border-border px-3 py-1.5 text-sm hover:bg-accent"
+          >
+            ← Voltar ao painel de horários
+          </Link>
+          <SignOutButton />
+        </div>
       </header>
 
       <section className="mb-10 space-y-4 rounded-xl border border-border bg-card p-5">
