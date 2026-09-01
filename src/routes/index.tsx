@@ -10,6 +10,8 @@ import { deleteLead } from "@/lib/prospect.functions";
 import { useLeadSession } from "@/lib/leadSession";
 import { LeadCard } from "@/components/LeadCard";
 import { AuthGate, SignOutButton } from "@/components/AuthGate";
+import { Landing } from "@/components/Landing";
+
 import { flagEmoji, type ContactType } from "@/lib/timeIntel";
 
 
