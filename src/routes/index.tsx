@@ -226,10 +226,11 @@ function Dashboard() {
 
 function Index() {
   return (
-    <AuthGate>
+    <AuthGate fallback={<Landing />}>
       <Suspense fallback={<div className="p-10 text-sm text-muted-foreground">Carregando…</div>}>
         <Dashboard />
       </Suspense>
     </AuthGate>
   );
 }
+
