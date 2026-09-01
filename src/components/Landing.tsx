@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import landingBg from "@/assets/landing-bg.png.asset.json";
 
 const FEATURES = [
   {
