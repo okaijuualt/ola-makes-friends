@@ -63,6 +63,8 @@
   --color-status-mid: var(--status-mid);
   --color-status-low: var(--status-low);
   --color-status-off: var(--status-off);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
 }
 
 @utility grid-cols-24 {
@@ -107,6 +109,8 @@
   --status-mid: oklch(0.78 0.15 85);
   --status-low: oklch(0.62 0.2 25);
   --status-off: oklch(0.6 0.02 260);
+  --brand: oklch(0.546 0.245 262.881);
+  --brand-foreground: oklch(0.985 0 0);
 }
 
 .dark {
@@ -146,6 +150,8 @@
   --status-mid: oklch(0.82 0.15 85);
   --status-low: oklch(0.68 0.2 25);
   --status-off: oklch(0.62 0.02 260);
+  --brand: oklch(0.546 0.245 262.881);
+  --brand-foreground: oklch(0.985 0 0);
 }
 
 @layer base {
