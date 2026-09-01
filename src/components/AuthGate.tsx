@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
-export function AuthGate({ children }: { children: ReactNode }) {
+export function AuthGate({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {
   const { loading, signedIn } = useAuth();
 
   if (loading) {
@@ -13,6 +13,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
   }
 
   if (!signedIn) {
+    if (fallback) return <>{fallback}</>;
     return (
       <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-5 py-12">
         <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">LeadFinder AI</p>
@@ -33,6 +34,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
 
   return <>{children}</>;
 }
+
 
 export function SignOutButton() {
   const qc = useQueryClient();

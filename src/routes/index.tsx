@@ -10,6 +10,8 @@ import { deleteLead } from "@/lib/prospect.functions";
 import { useLeadSession } from "@/lib/leadSession";
 import { LeadCard } from "@/components/LeadCard";
 import { AuthGate, SignOutButton } from "@/components/AuthGate";
+import { Landing } from "@/components/Landing";
+
 import { flagEmoji, type ContactType } from "@/lib/timeIntel";
 
 
@@ -226,10 +228,11 @@ function Dashboard() {
 
 function Index() {
   return (
-    <AuthGate>
+    <AuthGate fallback={<Landing />}>
       <Suspense fallback={<div className="p-10 text-sm text-muted-foreground">Carregando…</div>}>
         <Dashboard />
       </Suspense>
     </AuthGate>
   );
 }
+
