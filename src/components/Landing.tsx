@@ -21,8 +21,17 @@ const FEATURES = [
 
 export function Landing() {
   return (
-    <main className="flex h-screen flex-col overflow-hidden bg-background">
-      <header className="flex items-center justify-between border-b border-border px-5 py-3 sm:px-8">
+    <main className="relative flex h-screen flex-col overflow-hidden bg-background">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-60"
+        style={{ backgroundImage: `url(${landingBg.url})` }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/30"
+      />
+      <header className="relative flex items-center justify-between border-b border-border px-5 py-3 sm:px-8">
         <p className="font-mono text-xs uppercase tracking-[0.35em] text-muted-foreground">
           LeadFinder<span className="text-foreground"> AI</span>
         </p>
