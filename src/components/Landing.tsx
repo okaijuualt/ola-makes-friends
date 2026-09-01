@@ -52,7 +52,7 @@ export function Landing() {
         </div>
       </header>
 
-      <div className="relative grid min-h-0 flex-1 lg:grid-cols-[1.05fr_0.95fr]">
+      <div className="relative grid min-h-0 flex-1 md:grid-cols-[1.05fr_0.95fr]">
         <section className="flex min-h-0 flex-col justify-center gap-5 px-5 py-6 sm:px-8">
           <h1 className="text-[clamp(1.9rem,4.2vw,3.3rem)] font-bold leading-[1.08] tracking-tight">
             Fale com cada lead
@@ -92,7 +92,7 @@ export function Landing() {
           </div>
         </section>
 
-        <section className="relative hidden min-h-0 items-center justify-center px-6 py-6 lg:flex">
+        <section className="relative hidden min-h-0 items-center justify-center px-6 py-6 md:flex">
           <div
             aria-hidden
             className="absolute size-72 rounded-full bg-brand/20 blur-[100px]"
