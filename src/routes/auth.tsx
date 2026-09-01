@@ -34,7 +34,7 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (!loading && signedIn) void navigate({ to: "/" });
+    if (!loading && signedIn) void navigate({ to: "/captacao" });
   }, [loading, signedIn, navigate]);
 
   async function submit(e: React.FormEvent) {

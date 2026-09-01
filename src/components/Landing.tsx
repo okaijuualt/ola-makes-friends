@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import landingBg from "@/assets/landing-bg.png.asset.json";
 
 const FEATURES = [
   {
@@ -20,8 +21,17 @@ const FEATURES = [
 
 export function Landing() {
   return (
-    <main className="flex h-screen flex-col overflow-hidden bg-background">
-      <header className="flex items-center justify-between border-b border-border px-5 py-3 sm:px-8">
+    <main className="relative flex h-screen flex-col overflow-hidden bg-background">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-60"
+        style={{ backgroundImage: `url(${landingBg.url})` }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/30"
+      />
+      <header className="relative flex items-center justify-between border-b border-border px-5 py-3 sm:px-8">
         <p className="font-mono text-xs uppercase tracking-[0.35em] text-muted-foreground">
           LeadFinder<span className="text-foreground"> AI</span>
         </p>
@@ -41,7 +51,7 @@ export function Landing() {
         </div>
       </header>
 
-      <div className="grid min-h-0 flex-1 lg:grid-cols-[1.1fr_0.9fr]">
+      <div className="relative grid min-h-0 flex-1 lg:grid-cols-[1.1fr_0.9fr]">
         <section className="flex min-h-0 flex-col justify-center gap-5 px-5 py-6 sm:px-8">
           <span className="w-fit rounded-full border border-border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
             inteligência de horário
@@ -75,7 +85,7 @@ export function Landing() {
           </p>
         </section>
 
-        <section className="hidden min-h-0 flex-col justify-center gap-3 border-l border-border bg-card px-6 py-6 lg:flex">
+        <section className="hidden min-h-0 flex-col justify-center gap-3 border-l border-border bg-card/70 px-6 py-6 backdrop-blur-sm lg:flex">
           {FEATURES.map((f) => (
             <article key={f.tag} className="rounded-lg border border-border bg-background p-4">
               <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground">{f.tag}</p>
