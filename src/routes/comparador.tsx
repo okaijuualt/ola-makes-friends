@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Suspense, useEffect, useState } from "react";
 import { pickProfile, profilesQueryOptions } from "@/lib/profiles";
@@ -101,7 +101,7 @@ function Comparador() {
         onClick={() => window.history.back()}
         className="border-0 bg-transparent px-0 py-0 text-sm text-muted-foreground shadow-none hover:text-foreground"
       >
-        ← Voltar ao painel
+        ← Voltar
       </button>
       <h1 className="mt-3 text-3xl font-bold tracking-tight">Comparador de horários</h1>
       <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
