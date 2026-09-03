@@ -96,9 +96,13 @@ function Comparador() {
 
   return (
     <main className="mx-auto max-w-5xl px-5 py-10">
-      <Link to="/" className="text-sm text-muted-foreground hover:underline">
+      <button
+        type="button"
+        onClick={() => window.history.back()}
+        className="border-0 bg-transparent px-0 py-0 text-sm text-muted-foreground shadow-none hover:text-foreground"
+      >
         ← Voltar ao painel
-      </Link>
+      </button>
       <h1 className="mt-3 text-3xl font-bold tracking-tight">Comparador de horários</h1>
       <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
         Timeline de 24h dos dois países, alinhada pelo seu fuso. As faixas indicam probabilidade
