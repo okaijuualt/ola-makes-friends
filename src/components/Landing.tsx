@@ -113,11 +113,11 @@ export function Landing() {
             <div className="grid grid-cols-2 divide-x divide-border border-y border-border">
               <div className="px-5 py-3">
                 <p className="text-[11px] text-muted-foreground">Brasil</p>
-                <p className="text-sm font-semibold">UTC -03:00</p>
+                <p className="font-sans text-sm font-semibold">UTC -03:00</p>
               </div>
               <div className="px-5 py-3">
                 <p className="text-[11px] text-muted-foreground">Melhor janela</p>
-                <p className="text-lg font-bold leading-tight text-brand">09:00 - 11:00</p>
+                <p className="font-sans text-lg font-bold leading-tight text-brand">09:00 - 11:00</p>
               </div>
             </div>
             <div className="border-b border-border px-5 py-2.5">
@@ -131,7 +131,7 @@ export function Landing() {
                 { n: "24h", l: "Grade horária", sub: "Analisada por país" },
               ].map((s) => (
                 <div key={s.l} className="px-5 py-4">
-                  <p className="text-2xl font-bold">{s.n}</p>
+                  <p className="font-sans text-2xl font-bold">{s.n}</p>
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                     {s.l}
                   </p>
