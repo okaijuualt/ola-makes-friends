@@ -5,6 +5,10 @@ export type Lead = {
   country_code: string;
   niche: string;
   response_rate: number | null;
+  website?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  linkedin?: string | null;
 };
 
 export const DEMO_LEADS: Lead[] = [
