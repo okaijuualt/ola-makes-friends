@@ -7,7 +7,7 @@ import { prospectLeads, deleteLead, revalidateWebsites } from "@/lib/prospect.fu
 import { leadsQueryOptions, runsQueryOptions, siteHealth, touchLeads } from "@/lib/leads";
 import { profilesQueryOptions, pickProfile } from "@/lib/profiles";
 import { useLeadSession } from "@/lib/leadSession";
-import { flagEmoji } from "@/lib/timeIntel";
+import { FlagImg } from "@/components/CountrySelect";
 import { AuthGate, SignOutButton } from "@/components/AuthGate";
 
 
@@ -165,14 +165,17 @@ function Captacao() {
                 <button
                   key={p.country_code}
                   type="button"
+                  title={p.country_name}
+                  aria-pressed={on}
                   onClick={() => toggleCountry(p.country_code)}
-                  className={`rounded-full border px-3 py-1 text-xs transition-colors ${
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs transition-colors ${
                     on
                       ? "border-primary bg-primary text-primary-foreground"
                       : "border-border hover:bg-accent"
                   }`}
                 >
-                  {flagEmoji(p.country_code)} {p.country_code}
+                  <FlagImg code={p.country_code} name={p.country_name} size={14} />
+                  {p.country_code}
                 </button>
               );
             })}
