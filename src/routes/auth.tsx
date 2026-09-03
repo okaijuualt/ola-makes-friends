@@ -5,6 +5,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (search) => ({
+    mode: search.mode === "signup" ? "signup" : "signin",
+  }),
   head: () => ({
     meta: [
       { title: "Entrar — LeadFinder AI" },
@@ -16,7 +19,7 @@ export const Route = createFileRoute("/auth")({
       { property: "og:title", content: "Entrar — LeadFinder AI" },
       {
         property: "og:description",
-        content: "Login do LeadFinder AI: seus leads e buscas ficam privados na sua conta.",
+        content: "Acesso e cadastro do LeadFinder AI: seus leads e buscas ficam privados na sua conta.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -28,13 +31,14 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const navigate = useNavigate();
   const { signedIn, loading } = useAuth();
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const search = Route.useSearch();
+  const [mode, setMode] = useState<"signin" | "signup">(search.mode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (!loading && signedIn) void navigate({ to: "/captacao" });
+    if (!loading && signedIn) void navigate({ to: "/", replace: true });
   }, [loading, signedIn, navigate]);
 
   async function submit(e: React.FormEvent) {
