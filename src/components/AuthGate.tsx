@@ -32,14 +32,19 @@ export function SignOutButton() {
   const navigate = useNavigate();
   const { user } = useAuth();
   if (!user) return null;
+
   return (
     <button
       type="button"
       onClick={async () => {
         await qc.cancelQueries();
         qc.clear();
-        await supabase.auth.signOut();
-        void navigate({ to: "/", replace: true });
+        const { error } = await supabase.auth.signOut();
+        if (error) return;
+
+        // The root route is the canonical public entry point when signed out.
+        // Use a full navigation so /auth can never flash during the transition.
+        window.location.replace("/");
       }}
       className="inline-flex rounded-md border border-border px-3 py-1.5 text-xs text-muted-foreground hover:bg-accent"
       title={user.email ?? undefined}
