@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,19 +10,11 @@ export const Route = createFileRoute("/auth")({
   }),
   head: () => ({
     meta: [
-      { title: "Entrar — LeadFinder AI" },
+      { title: "Entrar — LeadFinder" },
       {
         name: "description",
-        content:
-          "Acesse sua conta do LeadFinder AI para prospectar e ver apenas os seus próprios leads, isolados de outros usuários.",
+        content: "Entre ou crie sua conta do LeadFinder.",
       },
-      { property: "og:title", content: "Entrar — LeadFinder AI" },
-      {
-        property: "og:description",
-        content: "Acesso e cadastro do LeadFinder AI: seus leads e buscas ficam privados na sua conta.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: AuthPage,
@@ -64,54 +56,95 @@ function AuthPage() {
     }
   }
 
+  const isSignup = mode === "signup";
+
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-5 py-12">
-      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">LeadFinder AI</p>
-      <h1 className="mt-1 text-2xl font-bold tracking-tight">
-        {mode === "signin" ? "Entrar na sua conta" : "Criar sua conta"}
-      </h1>
-      <p className="mt-2 text-sm text-muted-foreground">
-        Seus leads e buscas são privados: cada conta vê somente os próprios dados.
-      </p>
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden px-5 py-10">
+      <div aria-hidden className="pointer-events-none absolute -left-24 top-16 size-64 rounded-full bg-cyan-300/35 blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute -right-20 bottom-10 size-72 rounded-full bg-blue-300/35 blur-3xl" />
 
-      <form onSubmit={submit} className="mt-6 grid gap-3">
-        <label className="text-sm">
-          <span className="mb-1 block text-xs text-muted-foreground">E-mail</span>
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-md border border-input bg-background px-2 py-2 text-sm"
-          />
-        </label>
-        <label className="text-sm">
-          <span className="mb-1 block text-xs text-muted-foreground">Senha</span>
-          <input
-            type="password"
-            required
-            minLength={6}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-md border border-input bg-background px-2 py-2 text-sm"
-          />
-        </label>
-        <button
-          type="submit"
-          disabled={busy}
-          className="rounded-md bg-primary px-3 py-2 text-sm text-primary-foreground hover:opacity-90 disabled:opacity-60"
-        >
-          {busy ? "Enviando…" : mode === "signin" ? "Entrar" : "Criar conta"}
-        </button>
-      </form>
+      <section className="relative w-full max-w-md rounded-3xl border border-white/70 bg-white/80 p-7 shadow-[0_18px_45px_rgba(35,94,140,0.18)] backdrop-blur-md sm:p-9">
+        <div className="mb-6 flex items-center justify-between gap-4">
+          <Link to="/" className="flex items-center gap-2 text-sm font-bold tracking-tight hover:opacity-80">
+            <span className="flex size-8 items-center justify-center rounded-lg bg-brand text-brand-foreground shadow-inner">
+              ◷
+            </span>
+            LeadFinder
+          </Link>
+          <div className="rounded-full border border-border bg-accent/70 px-3 py-1 text-xs text-muted-foreground">
+            {isSignup ? "Nova conta" : "Acesso"}
+          </div>
+        </div>
 
-      <button
-        type="button"
-        onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-        className="mt-4 text-xs text-muted-foreground underline"
-      >
-        {mode === "signin" ? "Não tenho conta — criar agora" : "Já tenho conta — entrar"}
-      </button>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">
+          {isSignup ? "Crie sua conta" : "Bem-vindo de volta"}
+        </h1>
+        <p className="mt-2 text-sm leading-6 text-muted-foreground">
+          {isSignup
+            ? "Crie sua conta para encontrar leads e descobrir o melhor momento para falar com cada um."
+            : "Entre para continuar de onde parou e acessar seus leads."}
+        </p>
+
+        <div className="mt-6 grid grid-cols-2 rounded-xl border border-border bg-muted/60 p-1">
+          <button
+            type="button"
+            onClick={() => setMode("signin")}
+            className={`rounded-lg px-3 py-2 text-sm font-semibold ${
+              !isSignup ? "bg-white text-foreground shadow-sm" : "text-muted-foreground"
+            }`}
+          >
+            Entrar
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode("signup")}
+            className={`rounded-lg px-3 py-2 text-sm font-semibold ${
+              isSignup ? "bg-white text-foreground shadow-sm" : "text-muted-foreground"
+            }`}
+          >
+            Criar conta
+          </button>
+        </div>
+
+        <form onSubmit={submit} className="mt-6 grid gap-4">
+          <label className="grid gap-1.5 text-sm font-medium">
+            E-mail
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="voce@empresa.com"
+              autoComplete="email"
+              className="w-full px-3 py-2.5 text-sm"
+            />
+          </label>
+          <label className="grid gap-1.5 text-sm font-medium">
+            Senha
+            <input
+              type="password"
+              required
+              minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              autoComplete={isSignup ? "new-password" : "current-password"}
+              className="w-full px-3 py-2.5 text-sm"
+            />
+          </label>
+          <button
+            type="submit"
+            disabled={busy}
+            className="mt-1 rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground disabled:opacity-60"
+          >
+            {busy ? "Aguarde…" : isSignup ? "Criar minha conta" : "Entrar"}
+          </button>
+        </form>
+
+        <p className="mt-5 text-center text-xs text-muted-foreground">
+          Seus leads e buscas ficam separados por conta.
+        </p>
+      </section>
     </main>
   );
 }
