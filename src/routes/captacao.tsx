@@ -317,7 +317,14 @@ function Captacao() {
                         </span>
                       </td>
                       <td className="px-3 py-2 whitespace-nowrap">
-                        {flagEmoji(l.country_code)} {l.city ?? profile?.country_name ?? l.country_code}
+                        <span className="inline-flex items-center gap-1.5">
+                          <FlagImg
+                            code={l.country_code}
+                            name={profile?.country_name ?? l.country_code}
+                            size={16}
+                          />
+                          {l.city ?? profile?.country_name ?? l.country_code}
+                        </span>
                       </td>
                       <td className="px-3 py-2 text-xs">
                         <div>{l.email ?? "—"}</div>
