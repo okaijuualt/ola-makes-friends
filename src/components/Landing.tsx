@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { BadgeCheck, ChevronDown, Clock, Globe2, ShieldCheck, TrendingUp } from "lucide-react";
+import { BadgeCheck, Clock, Globe2, ShieldCheck, TrendingUp } from "lucide-react";
 import landingBg from "@/assets/landing-bg.png.asset.json";
 import worldMap from "@/assets/world-map-dots.png";
 
@@ -27,9 +27,7 @@ export function Landing() {
             <span className="flex size-7 items-center justify-center rounded-md bg-brand text-brand-foreground">
               <Clock className="size-4" />
             </span>
-            <p className="text-sm font-semibold tracking-tight">
-              LeadFinder
-            </p>
+            <p className="text-sm font-semibold tracking-tight">LeadFinder</p>
           </div>
           <nav className="hidden items-center gap-5 text-sm text-muted-foreground sm:flex">
             {["Recursos", "Planos", "Blog"].map((item) => (
@@ -116,9 +114,7 @@ export function Landing() {
             />
             <div className="grid grid-cols-2 divide-x divide-border border-y border-border">
               <div className="px-5 py-3">
-                <p className="flex items-center gap-1 text-[11px] text-muted-foreground">
-                  Brasil <ChevronDown className="size-3" />
-                </p>
+                <p className="text-[11px] text-muted-foreground">Brasil</p>
                 <p className="text-sm font-semibold">UTC -03:00</p>
               </div>
               <div className="px-5 py-3">
