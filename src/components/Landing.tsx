@@ -58,15 +58,13 @@ export function Landing() {
       <div className="relative grid min-h-0 flex-1 md:grid-cols-[1.05fr_0.95fr]">
         <section className="flex min-h-0 flex-col justify-center gap-5 px-5 py-6 sm:px-8">
           <h1 className="text-[clamp(1.9rem,4.2vw,3.3rem)] font-bold leading-[1.08] tracking-tight">
-            Fale com cada lead
+            Encontre leads.
             <br />
-            na <span className="text-brand">hora</span> em que ele
-            <br />
-            realmente responde.
+            Fale com eles na <span className="text-brand">hora certa.</span>
           </h1>
           <p className="max-w-xl text-sm text-muted-foreground sm:text-base">
-            Cruzamos fuso horário, horário comercial e picos de atividade por país para encontrar o
-            melhor momento de contato — e capturar mais leads automaticamente.
+            Encontre empresas para prospectar e descubra o melhor momento para entrar em contato com
+            cada lead, considerando fuso horário, horário comercial e padrões de atividade.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link
@@ -103,7 +101,7 @@ export function Landing() {
           />
           <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-border bg-card/80 shadow-2xl backdrop-blur-md">
             <p className="border-b border-border px-5 py-3 text-sm font-medium">
-              Melhor horário para contato
+              Melhor horário para falar
             </p>
             <img
               src={worldMap}
@@ -124,7 +122,7 @@ export function Landing() {
             </div>
             <div className="border-b border-border px-5 py-2.5">
               <span className="inline-flex items-center gap-1.5 rounded-md bg-status-high/10 px-2 py-1 text-xs font-medium text-status-high">
-                <TrendingUp className="size-3.5" /> Alta probabilidade
+                <TrendingUp className="size-3.5" /> Maior probabilidade de atividade
               </span>
             </div>
             <div className="grid grid-cols-2 divide-x divide-border">
