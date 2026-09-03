@@ -121,13 +121,17 @@ function Dashboard() {
 
         <div className="text-sm">
           <span className="mb-1 block text-xs text-muted-foreground">Exibir horário</span>
-          <div className="flex rounded-md border border-input p-0.5">
-            {(["lead", "user", "both"] as const).map((v) => (
+          <div className="flex overflow-hidden rounded-md border border-input">
+            {(["lead", "user", "both"] as const).map((v, index) => (
               <button
                 key={v}
                 onClick={() => setClockView(v)}
-                className={`flex-1 rounded px-2 py-1.5 text-xs transition-colors ${
-                  clockView === v ? "bg-primary text-primary-foreground" : "hover:bg-accent"
+                className={`flex-1 rounded-none px-2 py-1.5 text-xs transition-colors shadow-none ${
+                  index === 0 ? "rounded-l-md" : ""
+                } ${index === 2 ? "rounded-r-md" : ""} ${
+                  clockView === v
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-transparent hover:bg-accent"
                 }`}
               >
                 {v === "lead" ? "Lead" : v === "user" ? "Você" : "Ambos"}
