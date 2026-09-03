@@ -1,6 +1,5 @@
 import {
   computeOpportunityScore,
-  flagEmoji,
   formatDuration,
   resolveContactWindow,
   STATUS_META,
@@ -8,6 +7,7 @@ import {
   type CountryTimeProfile,
 } from "@/lib/timeIntel";
 import type { Lead } from "@/lib/demoLeads";
+import { FlagImg } from "@/components/CountrySelect";
 
 type Props = {
   lead: Lead;
