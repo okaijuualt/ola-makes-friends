@@ -3,13 +3,13 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Suspense, useEffect, useState } from "react";
 import { pickProfile, profilesQueryOptions } from "@/lib/profiles";
 import {
-  flagEmoji,
   getZonedParts,
   toMinutes,
   zonedWallToDate,
   fromMinutes,
   type CountryTimeProfile,
 } from "@/lib/timeIntel";
+import { CountrySelect, FlagImg } from "@/components/CountrySelect";
 
 export const Route = createFileRoute("/comparador")({
   head: () => ({
@@ -110,30 +110,22 @@ function Comparador() {
           { label: "Seu país", value: userCode, set: setUserCode },
           { label: "País do lead", value: leadCode, set: setLeadCode },
         ].map((sel) => (
-          <label key={sel.label} className="text-sm">
+          <div key={sel.label} className="text-sm">
             <span className="mb-1 block text-xs text-muted-foreground">{sel.label}</span>
-            <select
-              value={sel.value}
-              onChange={(e) => sel.set(e.target.value)}
-              className="w-full rounded-md border border-input bg-background px-2 py-2 text-sm"
-            >
-              {selectable.map((p) => (
-                <option key={p.country_code} value={p.country_code}>
-                  {flagEmoji(p.country_code)} {p.country_name}
-                </option>
-              ))}
-            </select>
-          </label>
+            <CountrySelect value={sel.value} onChange={sel.set} profiles={selectable} />
+          </div>
         ))}
       </div>
 
       <div className="mt-6 flex flex-wrap gap-4 text-xs text-muted-foreground">
-        <span>
-          {flagEmoji(user.country_code)} {user.country_name}: agora{" "}
+        <span className="inline-flex items-center gap-1.5">
+          <FlagImg code={user.country_code} name={user.country_name} size={16} />
+          {user.country_name}: agora{" "}
           <strong className="font-mono text-foreground">{fromMinutes(userNow.minutesOfDay)}</strong>
         </span>
-        <span>
-          {flagEmoji(lead.country_code)} {lead.country_name}: agora{" "}
+        <span className="inline-flex items-center gap-1.5">
+          <FlagImg code={lead.country_code} name={lead.country_name} size={16} />
+          {lead.country_name}: agora{" "}
           <strong className="font-mono text-foreground">{fromMinutes(leadNow.minutesOfDay)}</strong>
         </span>
         <span>({lead.data_confidence === "baixa" ? "confiança baixa" : `confiança ${lead.data_confidence}`})</span>
@@ -150,8 +142,9 @@ function Comparador() {
           </div>
 
           <div>
-            <div className="mb-1 text-xs text-muted-foreground">
-              {flagEmoji(user.country_code)} Você ({user.country_name})
+            <div className="mb-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+              <FlagImg code={user.country_code} name={user.country_name} size={16} />
+              Você ({user.country_name})
             </div>
             <div className="grid grid-cols-24 gap-0.5">
               {rows.map((r) => (
@@ -167,8 +160,9 @@ function Comparador() {
           </div>
 
           <div>
-            <div className="mb-1 text-xs text-muted-foreground">
-              {flagEmoji(lead.country_code)} Lead ({lead.country_name})
+            <div className="mb-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+              <FlagImg code={lead.country_code} name={lead.country_name} size={16} />
+              Lead ({lead.country_name})
             </div>
             <div className="grid grid-cols-24 gap-0.5">
               {rows.map((r) => (

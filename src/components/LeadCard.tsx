@@ -66,9 +66,7 @@ export function LeadCard({
       </header>
 
       <div className="mt-4 flex items-center gap-2 text-sm">
-        <span className="text-lg" aria-hidden>
-          {flagEmoji(lead.country_code)}
-        </span>
+        <FlagImg code={lead.country_code} name={leadProfile.country_name} size={20} />
         <span className="text-card-foreground">{leadProfile.country_name}</span>
         {isFallback && (
           <span className="rounded border border-border px-1.5 py-0.5 text-[10px] uppercase text-muted-foreground">
