@@ -61,17 +61,17 @@ export function LeadCard({ lead, leadProfile, userProfile, contactType, clockVie
       </div>
 
       <div className="mt-3 grid grid-cols-2 gap-3 text-sm">
-        {(clockView === "lead" || clockView === "both") && <div><div className="text-xs text-muted-foreground">Hora do lead</div><div className="font-mono text-lg text-card-foreground">{resolved.leadTimeLabel}</div></div>}
-        {(clockView === "user" || clockView === "both") && <div><div className="text-xs text-muted-foreground">Sua hora</div><div className="font-mono text-lg text-card-foreground">{resolved.userTimeLabel}</div></div>}
+        {(clockView === "lead" || clockView === "both") && <div><div className="text-xs text-muted-foreground">Hora do lead</div><div className="font-sans text-lg text-card-foreground">{resolved.leadTimeLabel}</div></div>}
+        {(clockView === "user" || clockView === "both") && <div><div className="text-xs text-muted-foreground">Sua hora</div><div className="font-sans text-lg text-card-foreground">{resolved.userTimeLabel}</div></div>}
       </div>
 
       <p className={`mt-3 text-sm font-medium ${status.className}`}>{status.dot} {status.label}</p>
       <p className="text-xs text-muted-foreground">{resolved.statusReason}</p>
 
       <dl className="mt-4 space-y-1.5 border-t border-border pt-3 text-xs">
-        <div className="flex justify-between gap-2"><dt className="text-muted-foreground">Melhor janela estimada</dt><dd className="font-mono text-card-foreground">{resolved.nextWindow ? `${resolved.nextWindow.start.slice(0, 5)}–${resolved.nextWindow.end.slice(0, 5)}${resolved.nextWindowIsTomorrow ? " (próx. dia útil)" : ""}` : "sem janela estimada"}</dd></div>
-        <div className="flex justify-between gap-2"><dt className="text-muted-foreground">No seu fuso</dt><dd className="font-mono text-card-foreground">{resolved.nextWindowUserLabel ?? "—"}</dd></div>
-        <div className="flex justify-between gap-2"><dt className="text-muted-foreground">Tempo até a janela</dt><dd className="font-mono text-card-foreground">{resolved.minutesUntilNextWindow === null ? "—" : formatDuration(resolved.minutesUntilNextWindow)}</dd></div>
+        <div className="flex justify-between gap-2"><dt className="text-muted-foreground">Melhor janela estimada</dt><dd className="font-sans text-card-foreground">{resolved.nextWindow ? `${resolved.nextWindow.start.slice(0, 5)}–${resolved.nextWindow.end.slice(0, 5)}${resolved.nextWindowIsTomorrow ? " (próx. dia útil)" : ""}` : "sem janela estimada"}</dd></div>
+        <div className="flex justify-between gap-2"><dt className="text-muted-foreground">No seu fuso</dt><dd className="font-sans text-card-foreground">{resolved.nextWindowUserLabel ?? "—"}</dd></div>
+        <div className="flex justify-between gap-2"><dt className="text-muted-foreground">Tempo até a janela</dt><dd className="font-sans text-card-foreground">{resolved.minutesUntilNextWindow === null ? "—" : formatDuration(resolved.minutesUntilNextWindow)}</dd></div>
       </dl>
 
       {(lead.website || lead.email || lead.phone || lead.linkedin) && (
