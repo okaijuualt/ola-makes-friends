@@ -12,7 +12,8 @@ import { LeadCard } from "@/components/LeadCard";
 import { AuthGate, SignOutButton } from "@/components/AuthGate";
 import { Landing } from "@/components/Landing";
 
-import { flagEmoji, type ContactType } from "@/lib/timeIntel";
+import type { ContactType } from "@/lib/timeIntel";
+import { CountrySelect } from "@/components/CountrySelect";
 
 
 export const Route = createFileRoute("/")({
@@ -112,20 +113,10 @@ function Dashboard() {
       </header>
 
       <section className="mb-8 grid gap-4 rounded-xl border border-border bg-card p-4 sm:grid-cols-3">
-        <label className="text-sm">
+        <div className="text-sm">
           <span className="mb-1 block text-xs text-muted-foreground">Seu país</span>
-          <select
-            value={userCountry}
-            onChange={(e) => setUserCountry(e.target.value)}
-            className="w-full rounded-md border border-input bg-background px-2 py-2 text-sm"
-          >
-            {selectable.map((p) => (
-              <option key={p.country_code} value={p.country_code}>
-                {flagEmoji(p.country_code)} {p.country_name}
-              </option>
-            ))}
-          </select>
-        </label>
+          <CountrySelect value={userCountry} onChange={setUserCountry} profiles={selectable} />
+        </div>
 
         <label className="text-sm">
           <span className="mb-1 block text-xs text-muted-foreground">Tipo de contato</span>
