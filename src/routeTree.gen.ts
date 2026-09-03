@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CaptacaoRouteImport } from './routes/captacao'
 import { Route as ComparadorRouteImport } from './routes/comparador'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,18 +35,25 @@ const ComparadorRoute = ComparadorRouteImport.update({
   path: '/comparador',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/captacao': typeof CaptacaoRoute
   '/comparador': typeof ComparadorRoute
+  '/dashboard': typeof DashboardRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/captacao': typeof CaptacaoRoute
   '/comparador': typeof ComparadorRoute
+  '/dashboard': typeof DashboardRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,14 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/captacao': typeof CaptacaoRoute
   '/comparador': typeof ComparadorRoute
+  '/dashboard': typeof DashboardRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/captacao' | '/comparador'
+  fullPaths: '/' | '/auth' | '/captacao' | '/comparador' | '/dashboard'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/captacao' | '/comparador'
-  id: '__root__' | '/' | '/auth' | '/captacao' | '/comparador'
+  to: '/' | '/auth' | '/captacao' | '/comparador' | '/dashboard'
+  id: '__root__' | '/' | '/auth' | '/captacao' | '/comparador' | '/dashboard'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +76,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CaptacaoRoute: typeof CaptacaoRoute
   ComparadorRoute: typeof ComparadorRoute
+  DashboardRoute: typeof DashboardRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -99,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ComparadorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -107,6 +124,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CaptacaoRoute: CaptacaoRoute,
   ComparadorRoute: ComparadorRoute,
+  DashboardRoute: DashboardRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
