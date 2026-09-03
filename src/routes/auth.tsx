@@ -38,7 +38,7 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (!loading && signedIn) void navigate({ to: "/", replace: true });
+    if (!loading && signedIn) void navigate({ to: "/dashboard", replace: true });
   }, [loading, signedIn, navigate]);
 
   async function submit(e: React.FormEvent) {
