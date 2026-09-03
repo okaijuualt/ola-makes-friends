@@ -40,11 +40,16 @@ export function Landing() {
           </nav>
         </div>
         <div className="flex items-center gap-2">
-          <Link to="/auth" className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground">
+          <Link
+            to="/auth"
+            search={{ mode: "signin" }}
+            className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground"
+          >
             Entrar
           </Link>
           <Link
             to="/auth"
+            search={{ mode: "signup" }}
             className="rounded-md bg-brand px-3 py-1.5 text-sm font-medium text-brand-foreground hover:opacity-90"
           >
             Criar conta
@@ -68,6 +73,7 @@ export function Landing() {
           <div className="flex flex-wrap gap-3">
             <Link
               to="/auth"
+              search={{ mode: "signup" }}
               className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-brand-foreground hover:opacity-90"
             >
               Criar conta grátis
