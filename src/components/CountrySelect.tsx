@@ -27,10 +27,16 @@ export function FlagImg({ code, name, size = 20, className = "" }: FlagProps) {
     );
   }
 
+  // flagcdn only serves a fixed set of PNG widths (w20, w40, w80, ...).
+  // Using w${size * 2} breaks for sizes such as 14px and 16px (w28/w32),
+  // causing the image to 404 and the fallback to show the country code.
+  const srcWidth = size <= 20 ? 40 : size <= 40 ? 80 : 160;
+  const src2xWidth = srcWidth * 2;
+
   return (
     <img
-      src={`https://flagcdn.com/w${size * 2}/${cc}.png`}
-      srcSet={`https://flagcdn.com/w${size * 4}/${cc}.png 2x`}
+      src={`https://flagcdn.com/w${srcWidth}/${cc}.png`}
+      srcSet={`https://flagcdn.com/w${src2xWidth}/${cc}.png 2x`}
       width={size}
       height={Math.round(size * 0.75)}
       alt={`Bandeira: ${label}`}
