@@ -19,8 +19,7 @@ export const Route = createFileRoute("/dashboard")({
       { title: "Dashboard — LeadFinder AI" },
       {
         name: "description",
-        content:
-          "Seu painel de leads e inteligência de horário de contato.",
+        content: "Seu painel de leads e inteligência de horário de contato.",
       },
     ],
   }),
@@ -94,12 +93,6 @@ function Dashboard() {
             className="inline-flex rounded-md border border-border px-3 py-1.5 text-sm hover:bg-accent"
           >
             Abrir comparador de horários →
-          </Link>
-          <Link
-            to="/"
-            className="inline-flex rounded-md border border-border px-3 py-1.5 text-sm hover:bg-accent"
-          >
-            Landing
           </Link>
           <SignOutButton />
         </div>
