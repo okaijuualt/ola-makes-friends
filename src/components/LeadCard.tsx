@@ -126,6 +126,57 @@ export function LeadCard({
         </div>
       </dl>
 
+      {(lead.website || lead.email || lead.phone || lead.linkedin) && (
+        <div className="mt-3 flex flex-wrap gap-2 border-t border-border pt-3">
+          {lead.website && (
+            <a
+              href={lead.website.startsWith("http") ? lead.website : `https://${lead.website}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 rounded border border-border px-2 py-1 text-[11px] text-card-foreground hover:border-ring/60 hover:bg-accent"
+            >
+              🌐 Site
+            </a>
+          )}
+          {lead.phone && (
+            <>
+              <a
+                href={`tel:${lead.phone.replace(/[^+\d]/g, "")}`}
+                className="inline-flex items-center gap-1 rounded border border-border px-2 py-1 text-[11px] text-card-foreground hover:border-ring/60 hover:bg-accent"
+              >
+                📞 Ligar
+              </a>
+              <a
+                href={`https://wa.me/${lead.phone.replace(/\D/g, "")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 rounded border border-status-high/40 bg-status-high/10 px-2 py-1 text-[11px] text-status-high hover:border-status-high/70"
+              >
+                💬 WhatsApp
+              </a>
+            </>
+          )}
+          {lead.email && (
+            <a
+              href={`mailto:${lead.email}`}
+              className="inline-flex max-w-full items-center gap-1 truncate rounded border border-border px-2 py-1 text-[11px] text-card-foreground hover:border-ring/60 hover:bg-accent"
+            >
+              ✉️ {lead.email}
+            </a>
+          )}
+          {lead.linkedin && (
+            <a
+              href={lead.linkedin.startsWith("http") ? lead.linkedin : `https://${lead.linkedin}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 rounded border border-border px-2 py-1 text-[11px] text-card-foreground hover:border-ring/60 hover:bg-accent"
+            >
+              in LinkedIn
+            </a>
+          )}
+        </div>
+      )}
+
       <div className="mt-3 flex items-start justify-between gap-3">
         <p className="text-xs text-muted-foreground">{score.label}</p>
         {onDelete && (
