@@ -158,9 +158,10 @@
       radial-gradient(circle at 88% 18%, oklch(0.94 0.08 188 / 45%), transparent 26rem),
       linear-gradient(180deg, oklch(0.89 0.065 222), oklch(0.97 0.018 220) 48%, oklch(0.89 0.045 205));
     color: var(--color-foreground);
-    font-family: "Trebuchet MS", Tahoma, Verdana, Arial, sans-serif;
+    font-family: "JetBrains Mono", monospace;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    font-variant-emoji: emoji;
   }
 
   ::selection {
@@ -168,7 +169,6 @@
   }
 }
 
-/* Aero surfaces: glossy enough to feel tactile, restrained enough to keep the UI readable. */
 button,
 input,
 select,
@@ -214,7 +214,6 @@ main {
   position: relative;
 }
 
-/* Give common panels a light, molded shell without requiring component rewrites. */
 .rounded-xl.border,
 .rounded-2xl.border,
 .rounded-lg.border {
