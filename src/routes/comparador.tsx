@@ -121,19 +121,19 @@ function Comparador() {
         <span className="inline-flex items-center gap-1.5">
           <FlagImg code={user.country_code} name={user.country_name} size={16} />
           {user.country_name}: agora{" "}
-          <strong className="font-mono text-foreground">{fromMinutes(userNow.minutesOfDay)}</strong>
+          <strong className="font-sans text-foreground">{fromMinutes(userNow.minutesOfDay)}</strong>
         </span>
         <span className="inline-flex items-center gap-1.5">
           <FlagImg code={lead.country_code} name={lead.country_name} size={16} />
           {lead.country_name}: agora{" "}
-          <strong className="font-mono text-foreground">{fromMinutes(leadNow.minutesOfDay)}</strong>
+          <strong className="font-sans text-foreground">{fromMinutes(leadNow.minutesOfDay)}</strong>
         </span>
         <span>({lead.data_confidence === "baixa" ? "confiança baixa" : `confiança ${lead.data_confidence}`})</span>
       </div>
 
       <div className="mt-6 overflow-x-auto rounded-xl border border-border bg-card p-4">
         <div className="min-w-[640px] space-y-3">
-          <div className="grid grid-cols-24 gap-0.5 text-[10px] text-muted-foreground">
+          <div className="grid grid-cols-24 gap-0.5 text-[10px] text-muted-foreground font-sans">
             {rows.map((r) => (
               <div key={r.userHour} className="text-center">
                 {r.userHour}
@@ -173,7 +173,7 @@ function Comparador() {
                 />
               ))}
             </div>
-            <div className="mt-1 grid grid-cols-24 gap-0.5 text-[10px] text-muted-foreground">
+            <div className="mt-1 grid grid-cols-24 gap-0.5 text-[10px] text-muted-foreground font-sans">
               {rows.map((r) => (
                 <div key={r.userHour} className="text-center">
                   {r.leadHour}
@@ -219,15 +219,15 @@ function Comparador() {
           {idealRows.length > 0 ? (
             <>
               Melhor janela estimada no seu horário:{" "}
-              <strong className="font-mono text-foreground">
+              <strong className="font-sans text-foreground">
                 {idealRows[0]!.userHour}:00–{idealRows[idealRows.length - 1]!.userHour + 1}:00
               </strong>{" "}
-              (corresponde a {idealRows[0]!.leadHour}:00 no fuso do lead).
+              (corresponde a <span className="font-sans text-foreground">{idealRows[0]!.leadHour}:00</span> no fuso do lead).
             </>
           ) : overlapRows.length > 0 ? (
             <>
               Sem interseção com o pico do lead. Sobreposição comercial estimada:{" "}
-              <strong className="font-mono text-foreground">
+              <strong className="font-sans text-foreground">
                 {overlapRows[0]!.userHour}:00–{overlapRows[overlapRows.length - 1]!.userHour + 1}:00
               </strong>{" "}
               no seu horário.
