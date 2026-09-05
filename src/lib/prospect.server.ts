@@ -73,30 +73,134 @@ function extractDestinationUrl(value: string) {
 
 async function searchWeb(query: string): Promise<WebResult[]> {
   const url = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
-  const res = await fetch(url, {
-    headers: { "User-Agent": "Mozilla/5.0 (compatible; LeadFinder/1.0)" },
-    signal: AbortSignal.timeout(8000),
-  });
-  if (!res.ok) return [];
+  let html = "";
+  try {
+    const res = await fetch(url, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+        "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
+      },
+      signal: AbortSignal.timeout(9000),
+    });
+    if (!res.ok) return [];
+    html = await res.text();
+  } catch {
+    return [];
+  }
 
-  const html = await res.text();
   const results: WebResult[] = [];
-  const links = html.match(/<a[^>]*class=["'][^"']*result__a[^"']*["'][^>]*>[\s\S]*?<\/a>/gi) ?? [];
+  // Each organic hit lives inside a result block that carries both the anchor
+  // and its snippet, so parse blocks instead of bare anchors.
+  const blocks = html.split(/class=["'][^"']*result__body[^"']*["']/i).slice(1);
+  const chunks = blocks.length ? blocks : [html];
 
-  for (const link of links) {
-    const hrefMatch = link.match(/href=["']([^"']+)["']/i);
-    if (!hrefMatch) continue;
+  for (const chunk of chunks) {
+    const anchor = chunk.match(
+      /<a[^>]*class=["'][^"']*result__a[^"']*["'][^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/i,
+    );
+    if (!anchor) continue;
 
-    const title = stripHtml(link.replace(/^[\s\S]*?>/, "").replace(/<\/a>[\s\S]*$/, ""));
-    const destination = extractDestinationUrl(hrefMatch[1]);
+    const destination = extractDestinationUrl(anchor[1]);
+    const title = stripHtml(anchor[2]);
     if (!title || !destination.startsWith("http")) continue;
 
-    results.push({ title, url: destination, snippet: "" });
-    if (results.length >= 8) break;
+    const snippetMatch = chunk.match(
+      /class=["'][^"']*result__snippet[^"']*["'][^>]*>([\s\S]*?)<\/a>/i,
+    );
+    const snippet = snippetMatch ? stripHtml(snippetMatch[1]).slice(0, 320) : "";
+
+    results.push({ title, url: destination, snippet });
+    if (results.length >= 12) break;
   }
 
   return results;
 }
+
+const CONTACT_BLOCKLIST = [
+  "wikipedia.org",
+  "facebook.com",
+  "instagram.com",
+  "youtube.com",
+  "reddit.com",
+  "tripadvisor.com",
+  "glassdoor.com",
+  "indeed.com",
+  "duckduckgo.com",
+];
+
+type ContactEvidence = { host: string; url: string; emails: string[]; phones: string[] };
+
+async function fetchText(url: string) {
+  try {
+    const res = await fetch(url, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+      },
+      redirect: "follow",
+      signal: AbortSignal.timeout(7000),
+    });
+    if (!res.ok) return "";
+    return (await res.text()).slice(0, 250_000);
+  } catch {
+    return "";
+  }
+}
+
+async function scrapeContacts(target: string): Promise<ContactEvidence | null> {
+  let host = "";
+  try {
+    host = new URL(target).hostname.replace(/^www\./, "");
+  } catch {
+    return null;
+  }
+  if (CONTACT_BLOCKLIST.some((b) => host.endsWith(b))) return null;
+
+  const base = `https://${host}`;
+  const pages = await Promise.all([
+    fetchText(base),
+    fetchText(`${base}/contato`),
+    fetchText(`${base}/contact`),
+  ]);
+  const html = pages.join(" ");
+  if (!html) return null;
+
+  const emails = [
+    ...new Set(
+      (html.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g) ?? [])
+        .map((e) => e.toLowerCase())
+        .filter((e) => !/\.(png|jpe?g|svg|webp|gif|css|js)$/.test(e))
+        .filter((e) => !/(sentry|example|wixpress|godaddy|no-?reply)/.test(e)),
+    ),
+  ].slice(0, 3);
+
+  const phones = [
+    ...new Set(
+      (html.match(/(?:tel:|whatsapp[^0-9+]{0,20})\+?[0-9()\s.-]{8,20}/gi) ?? [])
+        .map((p) => p.replace(/^(tel:|whatsapp[^0-9+]*)/i, "").trim())
+        .filter((p) => p.replace(/\D/g, "").length >= 8),
+    ),
+  ].slice(0, 3);
+
+  if (!emails.length && !phones.length) return null;
+  return { host, url: base, emails, phones };
+}
+
+async function collectContacts(results: WebResult[]): Promise<ContactEvidence[]> {
+  const targets = results.slice(0, 18);
+  const found: ContactEvidence[] = [];
+  // Small batches keep the Worker from opening dozens of sockets at once.
+  for (let i = 0; i < targets.length; i += 6) {
+    const batch = await Promise.allSettled(targets.slice(i, i + 6).map((r) => scrapeContacts(r.url)));
+    for (const item of batch) {
+      if (item.status === "fulfilled" && item.value) found.push(item.value);
+    }
+  }
+  return found;
+}
+
+
 
 async function collectResearch(input: ProspectInput): Promise<WebResult[]> {
   const countryNames: Record<string, string> = {
