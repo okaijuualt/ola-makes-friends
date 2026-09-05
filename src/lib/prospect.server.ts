@@ -377,8 +377,8 @@ export async function generateLeads(input: ProspectInput): Promise<GeneratedLead
     if (!evidence) return lead;
     return {
       ...lead,
-      email: lead.email || evidence.emails[0],
-      phone: lead.phone || evidence.phones[0],
+      ...(lead.email || evidence.emails[0] ? { email: lead.email || evidence.emails[0]! } : {}),
+      ...(lead.phone || evidence.phones[0] ? { phone: lead.phone || evidence.phones[0]! } : {}),
     };
   });
 }
