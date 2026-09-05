@@ -4,7 +4,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { profilesQueryOptions, pickProfile } from "@/lib/profiles";
-import { DEMO_LEADS } from "@/lib/demoLeads";
 import { leadsQueryOptions, touchLeads } from "@/lib/leads";
 import { deleteLead } from "@/lib/prospect.functions";
 import { useLeadSession } from "@/lib/leadSession";
@@ -67,8 +66,7 @@ function Dashboard() {
     () => session.filterLeads(captured ?? []),
     [captured, session],
   );
-  const usingDemo = storedCount === 0;
-  const leads = usingDemo ? DEMO_LEADS : activeCaptured;
+  const leads = activeCaptured;
 
   return (
     <main className="mx-auto max-w-6xl px-5 py-10">
@@ -143,7 +141,7 @@ function Dashboard() {
 
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="text-sm text-muted-foreground">
-          {leads.length} leads {usingDemo ? "(demonstração)" : "(base captada)"}
+          {leads.length} leads {storedCount > 0 ? "(base captada)" : ""}
         </div>
         {session.hydrated && storedCount > 0 && (
           <div className="flex flex-wrap gap-2">
@@ -172,31 +170,43 @@ function Dashboard() {
         )}
       </div>
 
-      {session.hydrated && !usingDemo && leads.length === 0 && (
+      {session.hydrated && storedCount === 0 ? (
+        <section className="rounded-xl border border-border bg-card px-6 py-10 text-center">
+          <h2 className="text-base font-semibold">Seus leads aparecerão aqui</h2>
+          <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+            Capte empresas para começar a analisar os melhores horários de contato.
+          </p>
+          <Link
+            to="/captacao"
+            className="mt-5 inline-flex rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground hover:opacity-90"
+          >
+            Captar leads
+          </Link>
+        </section>
+      ) : session.hydrated && leads.length === 0 ? (
         <p className="mb-6 text-sm text-muted-foreground">
-          Sessão limpa. Os leads continuam salvos — use “Retomar última sessão” para trazê-los de
-          volta.
+          A sessão atual está vazia. Use “Retomar última sessão” para trazer os leads salvos de volta.
         </p>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {now &&
+            leads.map((lead) => {
+              const leadProfile = pickProfile(profiles, lead.country_code)!;
+              return (
+                <LeadCard
+                  key={lead.id}
+                  lead={lead}
+                  leadProfile={leadProfile}
+                  userProfile={userProfile}
+                  contactType={contactType}
+                  clockView={clockView}
+                  now={now}
+                  onDelete={() => remove.mutate(lead.id)}
+                />
+              );
+            })}
+        </div>
       )}
-
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {now &&
-          leads.map((lead) => {
-            const leadProfile = pickProfile(profiles, lead.country_code)!;
-            return (
-              <LeadCard
-                key={lead.id}
-                lead={lead}
-                leadProfile={leadProfile}
-                userProfile={userProfile}
-                contactType={contactType}
-                clockView={clockView}
-                now={now}
-                onDelete={usingDemo ? undefined : () => remove.mutate(lead.id)}
-              />
-            );
-          })}
-      </div>
 
       <p className="mt-10 text-xs text-muted-foreground">
         Países sem dado específico usam um perfil padrão genérico, sinalizado com confiança baixa.
