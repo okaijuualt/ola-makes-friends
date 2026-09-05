@@ -43,12 +43,32 @@ function decodeHtml(value: string) {
     .replace(/&amp;/g, "&")
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
+    .replace(/&#x27;/gi, "'")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">");
 }
 
 function stripHtml(value: string) {
   return decodeHtml(value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim());
+}
+
+function resolveSearchUrl(value: string) {
+  const decoded = decodeHtml(value);
+  if (decoded.startsWith("http://") || decoded.startsWith("https://")) return decoded;
+  if (decoded.startsWith("//")) return `https:${decoded}`;
+  return "";
+}
+
+function extractDestinationUrl(value: string) {
+  const resolved = resolveSearchUrl(value);
+  if (!resolved) return "";
+  try {
+    const parsed = new URL(resolved);
+    const uddg = parsed.searchParams.get("uddg");
+    return uddg ? decodeURIComponent(uddg) : resolved;
+  } catch {
+    return resolved;
+  }
 }
 
 async function searchWeb(query: string): Promise<WebResult[]> {
@@ -61,17 +81,17 @@ async function searchWeb(query: string): Promise<WebResult[]> {
 
   const html = await res.text();
   const results: WebResult[] = [];
-  const blocks = html.match(/<div class="result[^>]*>[\s\S]*?<\/div>\s*<\/div>/g) ?? [];
+  const links = html.match(/<a[^>]*class=["'][^"']*result__a[^"']*["'][^>]*>[\s\S]*?<\/a>/gi) ?? [];
 
-  for (const block of blocks) {
-    const linkMatch = block.match(/<a[^>]*class="result__a"[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/);
-    if (!linkMatch) continue;
-    const snippetMatch = block.match(/<a[^>]*class="result__snippet"[^>]*>[\s\S]*?<\/a>|<div[^>]*class="result__snippet"[^>]*>([\s\S]*?)<\/div>/);
-    const rawUrl = decodeHtml(linkMatch[1]);
-    const rawTitle = stripHtml(linkMatch[2]);
-    const rawSnippet = snippetMatch?.[1] ? stripHtml(snippetMatch[1]) : "";
-    if (!rawTitle || !rawUrl.startsWith("http")) continue;
-    results.push({ title: rawTitle, url: rawUrl, snippet: rawSnippet });
+  for (const link of links) {
+    const hrefMatch = link.match(/href=["']([^"']+)["']/i);
+    if (!hrefMatch) continue;
+
+    const title = stripHtml(link.replace(/^[\s\S]*?>/, "").replace(/<\/a>[\s\S]*$/, ""));
+    const destination = extractDestinationUrl(hrefMatch[1]);
+    if (!title || !destination.startsWith("http")) continue;
+
+    results.push({ title, url: destination, snippet: "" });
     if (results.length >= 8) break;
   }
 
@@ -79,10 +99,33 @@ async function searchWeb(query: string): Promise<WebResult[]> {
 }
 
 async function collectResearch(input: ProspectInput): Promise<WebResult[]> {
-  const countries = input.countries.slice(0, 6);
-  const queries = countries.map((country) =>
-    `${input.niche} empresas ${country}${input.extra ? ` ${input.extra}` : ""}`,
-  );
+  const countryNames: Record<string, string> = {
+    BR: "Brasil",
+    US: "Estados Unidos",
+    CA: "Canadá",
+    MX: "México",
+    AR: "Argentina",
+    CL: "Chile",
+    CO: "Colômbia",
+    PT: "Portugal",
+    ES: "Espanha",
+    GB: "Reino Unido",
+    FR: "França",
+    DE: "Alemanha",
+    IT: "Itália",
+    AU: "Austrália",
+    JP: "Japão",
+    KR: "Coreia do Sul",
+    IN: "Índia",
+    AE: "Emirados Árabes Unidos",
+    SG: "Singapura",
+    NL: "Países Baixos",
+  };
+
+  const queries = input.countries.map((country) => {
+    const name = countryNames[country] ?? country;
+    return `${input.niche} empresas ${name}${input.extra ? ` ${input.extra}` : ""}`;
+  });
   const batches = await Promise.allSettled(queries.map(searchWeb));
   const seen = new Set<string>();
   const results: WebResult[] = [];
@@ -101,7 +144,7 @@ async function collectResearch(input: ProspectInput): Promise<WebResult[]> {
     }
   }
 
-  return results.slice(0, 40);
+  return results.slice(0, 60);
 }
 
 export async function generateLeads(input: ProspectInput): Promise<GeneratedLead[]> {
