@@ -11,7 +11,7 @@ export function AuthGate({ children, fallback }: { children: ReactNode; fallback
 
   useEffect(() => {
     if (!loading && !signedIn && !fallback) {
-      void navigate({ to: "/auth", replace: true });
+      void navigate({ to: "/auth", search: { mode: "signin" }, replace: true });
     }
   }, [fallback, loading, navigate, signedIn]);
 
