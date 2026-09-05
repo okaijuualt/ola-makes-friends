@@ -13,12 +13,7 @@ import type { ContactType } from "@/lib/timeIntel";
 import { CountrySelect } from "@/components/CountrySelect";
 
 export const Route = createFileRoute("/dashboard")({
-  head: () => ({
-    meta: [
-      { title: "Dashboard — LeadFinder AI" },
-      { name: "description", content: "Seu painel de leads e inteligência de horário de contato." },
-    ],
-  }),
+  head: () => ({ meta: [{ title: "Dashboard — LeadFinder AI" }, { name: "description", content: "Seu painel de leads e inteligência de horário de contato." }] }),
   loader: ({ context }) => context.queryClient.ensureQueryData(profilesQueryOptions),
   component: DashboardRoute,
 });
@@ -70,7 +65,7 @@ function Dashboard() {
         <label className="text-sm"><span className="mb-1 block text-xs text-muted-foreground">Tipo de contato</span><select value={contactType} onChange={(e) => setContactType(e.target.value as ContactType)} className="w-full rounded-md border border-input bg-background px-2 py-2 text-sm">{(Object.keys(CONTACT_LABEL) as ContactType[]).map((k) => <option key={k} value={k}>{CONTACT_LABEL[k]}</option>)}</select></label>
         <div className="text-sm">
           <span className="mb-1 block text-xs text-muted-foreground">Exibir horário</span>
-          <div className="relative isolate grid grid-cols-3 overflow-hidden rounded-md border border-input bg-background/45 p-0">
+          <div className="clock-view-selector relative isolate grid grid-cols-3 overflow-hidden rounded-md border border-input bg-background/45 p-0">
             <span aria-hidden className={`pointer-events-none absolute inset-y-0 left-0 z-0 w-1/3 border bg-primary transition-[transform,border-radius] duration-200 ease-out ${selectedClockIndex === 0 ? "rounded-l-[calc(var(--radius-md)-2px)] border-ring/60" : selectedClockIndex === 2 ? "rounded-r-[calc(var(--radius-md)-2px)] border-ring/60" : "rounded-none border-ring/60"}`} style={{ transform: `translateX(${selectedClockIndex * 100}%)` }} />
             {clockViews.map((v, index) => <button key={v} type="button" onClick={() => setClockView(v)} className={`relative z-10 min-w-0 rounded-none border-0 bg-transparent px-2 py-1.5 text-xs shadow-none transition-colors duration-150 ${index === 0 ? "rounded-l-[calc(var(--radius-md)-2px)] rounded-r-none" : index === 2 ? "rounded-l-none rounded-r-[calc(var(--radius-md)-2px)]" : "rounded-none"} ${selectedClockIndex === index ? "text-primary-foreground" : "text-foreground hover:bg-accent/60"}`}>{v === "lead" ? "Lead" : v === "user" ? "Você" : "Ambos"}</button>)}
           </div>
