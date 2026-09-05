@@ -99,7 +99,7 @@ function Comparador() {
       <button
         type="button"
         onClick={() => window.history.back()}
-        className="border-0 bg-transparent px-0 py-0 text-sm text-muted-foreground shadow-none hover:text-foreground"
+        className="inline-flex items-center rounded-full border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground shadow-[inset_0_1px_0_oklch(1_0_0_/_70%),0_2px_5px_oklch(0.25_0.06_235_/_8%)] transition-all hover:border-ring/70 hover:bg-accent hover:shadow-[inset_0_1px_0_oklch(1_0_0_/_85%),0_3px_7px_oklch(0.25_0.06_235_/_12%)] active:translate-y-px"
       >
         ← Voltar
       </button>
@@ -137,7 +137,7 @@ function Comparador() {
 
       <div className="mt-6 overflow-x-auto rounded-xl border border-border bg-card p-4">
         <div className="min-w-[640px] space-y-3">
-          <div className="grid grid-cols-24 gap-0.5 text-[10px] text-muted-foreground font-sans">
+          <div className="grid grid-cols-24 gap-0.5 font-sans text-[10px] text-muted-foreground">
             {rows.map((r) => (
               <div key={r.userHour} className="text-center">
                 {r.userHour}
@@ -177,7 +177,7 @@ function Comparador() {
                 />
               ))}
             </div>
-            <div className="mt-1 grid grid-cols-24 gap-0.5 text-[10px] text-muted-foreground font-sans">
+            <div className="mt-1 grid grid-cols-24 gap-0.5 font-sans text-[10px] text-muted-foreground">
               {rows.map((r) => (
                 <div key={r.userHour} className="text-center">
                   {r.leadHour}
