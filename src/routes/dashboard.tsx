@@ -67,6 +67,8 @@ function Dashboard() {
     [captured, session],
   );
   const leads = activeCaptured;
+  const clockViews = ["lead", "user", "both"] as const;
+  const selectedClockIndex = clockViews.indexOf(clockView);
 
   return (
     <main className="mx-auto max-w-6xl px-5 py-10">
@@ -119,17 +121,21 @@ function Dashboard() {
 
         <div className="text-sm">
           <span className="mb-1 block text-xs text-muted-foreground">Exibir horário</span>
-          <div className="flex overflow-hidden rounded-md border border-input">
-            {(["lead", "user", "both"] as const).map((v, index) => (
+          <div className="relative isolate flex overflow-hidden rounded-md border border-input bg-background/45 p-0.5">
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-y-0.5 left-0.5 z-0 w-[calc((100%-4px)/3)] rounded-[calc(var(--radius-md)-2px)] bg-primary shadow-[inset_0_1px_0_oklch(1_0_0_/_70%),0_1px_2px_oklch(0.25_0.06_235_/_16%)] transition-transform duration-200 ease-out"
+              style={{ transform: `translateX(${selectedClockIndex * 100}%)` }}
+            />
+            {clockViews.map((v) => (
               <button
                 key={v}
+                type="button"
                 onClick={() => setClockView(v)}
-                className={`flex-1 rounded-none px-2 py-1.5 text-xs transition-colors shadow-none ${
-                  index === 0 ? "rounded-l-md" : ""
-                } ${index === 2 ? "rounded-r-md" : ""} ${
-                  clockView === v
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-transparent hover:bg-accent"
+                className={`relative z-10 flex-1 rounded-none border-0 bg-transparent px-2 py-1.5 text-xs shadow-none transition-colors duration-150 ${
+                  selectedClockIndex === clockViews.indexOf(v)
+                    ? "text-primary-foreground"
+                    : "text-foreground hover:bg-accent/60"
                 }`}
               >
                 {v === "lead" ? "Lead" : v === "user" ? "Você" : "Ambos"}
