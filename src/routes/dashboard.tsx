@@ -124,12 +124,12 @@ function Dashboard() {
           <div className="relative isolate flex overflow-hidden rounded-md border border-input bg-background/45 p-0.5">
             <span
               aria-hidden
-              className={`pointer-events-none absolute inset-y-0.5 left-0.5 z-0 w-[calc((100%-4px)/3)] bg-primary shadow-[inset_0_1px_0_oklch(1_0_0_/_70%),0_1px_2px_oklch(0.25_0.06_235_/_16%)] transition-[transform,border-radius] duration-200 ease-out ${
+              className={`pointer-events-none absolute inset-y-0.5 left-0.5 z-0 w-[calc((100%-4px)/3)] border bg-primary shadow-[inset_0_1px_0_oklch(1_0_0_/_70%),0_0_7px_oklch(0.67_0.17_232_/_52%),0_1px_2px_oklch(0.25_0.06_235_/_18%)] transition-[transform,border-radius,box-shadow] duration-200 ease-out ${
                 selectedClockIndex === 0
-                  ? "rounded-l-[calc(var(--radius-md)-2px)]"
+                  ? "rounded-l-[calc(var(--radius-md)-2px)] border-ring/60"
                   : selectedClockIndex === 2
-                    ? "rounded-r-[calc(var(--radius-md)-2px)]"
-                    : "rounded-none"
+                    ? "rounded-r-[calc(var(--radius-md)-2px)] border-ring/60"
+                    : "rounded-none border-ring/60"
               }`}
               style={{ transform: `translateX(${selectedClockIndex * 100}%)` }}
             />
