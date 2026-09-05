@@ -101,14 +101,14 @@ async function searchWeb(query: string): Promise<WebResult[]> {
     );
     if (!anchor) continue;
 
-    const destination = extractDestinationUrl(anchor[1]);
-    const title = stripHtml(anchor[2]);
+    const destination = extractDestinationUrl(anchor[1] ?? "");
+    const title = stripHtml(anchor[2] ?? "");
     if (!title || !destination.startsWith("http")) continue;
 
     const snippetMatch = chunk.match(
       /class=["'][^"']*result__snippet[^"']*["'][^>]*>([\s\S]*?)<\/a>/i,
     );
-    const snippet = snippetMatch ? stripHtml(snippetMatch[1]).slice(0, 320) : "";
+    const snippet = snippetMatch ? stripHtml(snippetMatch[1] ?? "").slice(0, 320) : "";
 
     results.push({ title, url: destination, snippet });
     if (results.length >= 12) break;
