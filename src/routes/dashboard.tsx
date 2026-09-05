@@ -138,12 +138,12 @@ function Dashboard() {
                 key={v}
                 type="button"
                 onClick={() => setClockView(v)}
-                className={`relative z-10 min-w-0 border-0 bg-transparent px-2 py-1.5 text-xs shadow-none transition-colors duration-150 ${
+                className={`relative z-10 min-w-0 rounded-none border-0 bg-transparent px-2 py-1.5 text-xs shadow-none transition-colors duration-150 ${
                   index === 0
-                    ? "rounded-l-[calc(var(--radius-md)-2px)]"
+                    ? "rounded-l-[calc(var(--radius-md)-2px)] rounded-r-none"
                     : index === 2
-                      ? "rounded-r-[calc(var(--radius-md)-2px)]"
-                      : "!rounded-none"
+                      ? "rounded-l-none rounded-r-[calc(var(--radius-md)-2px)]"
+                      : "rounded-none"
                 } ${
                   selectedClockIndex === index
                     ? "text-primary-foreground"
