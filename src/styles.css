@@ -240,3 +240,11 @@ main {
 .border-border {
   border-color: oklch(0.72 0.09 226 / 80%);
 }
+
+/* O seletor "Exibir horário" não usa o brilho/sombra global dos botões. */
+.clock-view-selector button,
+.clock-view-selector button:hover:not(:disabled),
+.clock-view-selector button:active:not(:disabled) {
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+}
